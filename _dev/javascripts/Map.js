@@ -75,16 +75,15 @@ MapItem.prototype = {
 	},
 	
 	openPhoto: function(marker){
-		//console.log(jQuery);
+		var self = this;
 		jQuery.post(
 			ajaxurl,
 			{
 				'action': 'mon_action',
 				'param': marker.id
-			},
-			function(response){
-					console.log(response);
-				}
+			}, function(response) {
+				self.manager.photoManager.post.updateFromJson(response)
+			}
 		);
 
 		var self = this;

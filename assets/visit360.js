@@ -997,6 +997,53 @@ Marker.prototype = {
 	}
 
 }
+/**
+ * The content, it is displayed by default as a sidebar 
+ */
+function Post(scope) {
+    this._display = false;
+    this.sidebar = scope.querySelector(".photo__sidebar");
+    this.sidebarBtn = scope.querySelector(".photo__sidebar-close");
+    this.title = scope.querySelector(".photo__sidebar-title");
+    this.content = scope.querySelector(".photo__sidebar-content");
+    this.data = {};
+    this.initEvents();
+}
+
+Post.prototype = {
+    updateFromJson: function(response) {
+        this.data = JSON.parse(response);
+        
+        this.title.innerHTML = this.data.title;
+        this.content.innerHTML = this.data.content;
+    },
+
+    get display() {
+        return this._display;
+    },
+
+    set display(isDisplay) {
+        if( isDisplay ) {
+            console.log("Display")
+            this._display = true; 
+            this.sidebar.classList.add("photo__sidebar--display");
+            this.sidebarBtn.classList.remove("photo__sidebar-close--reverse");
+        } else {
+            console.log("Hide")
+            this._display = false; 
+            this.sidebar.classList.remove("photo__sidebar--display");
+            this.sidebarBtn.classList.add("photo__sidebar-close--reverse");
+        }
+    },
+
+    initEvents: function(){
+        var self = this;
+        this.sidebarBtn.addEventListener("click", function(){
+            self.display = self.display ? false : true
+        })
+    }
+}
+
 
 /**
  * 
@@ -1009,14 +1056,15 @@ Marker.prototype = {
  * @prop {WebGLRenderer} renderer
  * @prop {Scene} scene
  * @prop {PerspectiveCamera} camera 
+ * @prop {Post} post
  */
 function PhotoManager(mapManager) {
 	this.mapManager = mapManager;
 	this.el = document.querySelector(".photo");
 	this.canvas = document.querySelector("#photo");
 	this.backBtn = document.querySelector(".photo__thumbnail-back");
-	this.sidebar = this.el.querySelector(".photo__sidebar");
-	this.sidebarBtn = this.el.querySelector(".photo__sidebar-close");
+
+	this.post = new Post(this.el);
 
 	this.renderer = new THREE.WebGLRenderer({canvas: this.canvas});
 	this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -1085,8 +1133,7 @@ PhotoManager.prototype = {
 			this.el.classList.add("photo--display");
 			this.backBtn.classList.add("photo__thumbnail-back--display");
 			this.render();
-			this.sidebar.classList.add("photo__sidebar--display");
-
+			this.post.display = true
 			setTimeout((function(){
 				this.mapManager.currentMap.currentMarker.unzoom();
 				this.mapManager.container.classList.add("visite__archive--hide");
@@ -1102,8 +1149,7 @@ PhotoManager.prototype = {
 	 */
 	hide: function(){
 		this.isDisplay = false;
-		this.sidebar.classList.remove("photo__sidebar--display");
-		this.sidebarBtn.classList.remove("photo__sidebar-close--reverse");
+		this.post.display = false
 		this.backBtn.classList.remove("photo__thumbnail-back--display");
 		setTimeout((function(){
 			this.el.classList.remove("photo--display"); 
@@ -1225,18 +1271,12 @@ PhotoManager.prototype = {
 				this.mapManager.currentMap.closePhoto();
 			}
 		}).bind(this))
-	
-		this.sidebarBtn.addEventListener("click", function(){
-			self.sidebar.classList.toggle("photo__sidebar--display");
-			this.classList.toggle("photo__sidebar-close--reverse");
-		});
 
 		document.addEventListener("resize", this.onDocumentResize.bind(this), false);
 		document.addEventListener("mousedown", this.onDocumentMouseDown.bind(this), false);
 		document.addEventListener("mousemove", this.onDocumentMouseMove.bind(this), false);
 		document.addEventListener("mouseup", this.onDocumentMouseUp.bind(this), false);
-	
-	
+
 		document.addEventListener("touchstart", this.onDocumentMouseDown.bind(this), false);
 		document.addEventListener("touchmove", this.onDocumentMouseMove.bind(this), false);
 		document.addEventListener("touchend", this.onDocumentMouseUp.bind(this), false);
@@ -1320,16 +1360,15 @@ MapItem.prototype = {
 	},
 	
 	openPhoto: function(marker){
-		//console.log(jQuery);
+		var self = this;
 		jQuery.post(
 			ajaxurl,
 			{
 				'action': 'mon_action',
 				'param': marker.id
-			},
-			function(response){
-					console.log(response);
-				}
+			}, function(response) {
+				self.manager.photoManager.post.updateFromJson(response)
+			}
 		);
 
 		var self = this;
