@@ -944,7 +944,6 @@ function Marker(el, map, options) {
 }
 
 
-
 Marker.prototype = {
 
 	get absolutePosition(){
@@ -996,6 +995,19 @@ Marker.prototype = {
 	}
 
 }
+
+/**
+ * 
+ * @param {Manager} mapManager 
+ * @prop {NodeElement} el : The photo manager container
+ * @prop {NodeElement} canvas 
+ * @prop {NodeElement} sidebar 
+ * @prop {NodeElement} sidebarBtn
+ * @prop {NodeElement} backBtn 
+ * @prop {WebGLRenderer} renderer
+ * @prop {Scene} scene
+ * @prop {PerspectiveCamera} camera 
+ */
 function PhotoManager(mapManager) {
 	this.mapManager = mapManager;
 	this.el = document.querySelector(".photo");
@@ -1012,46 +1024,23 @@ function PhotoManager(mapManager) {
     // ajoute la caméra
     this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
     this.camera.lookAt(new THREE.Vector3(0, 0, 0));
-
-    this.initSphereMesh();
-    this.initParams();
-
 	this.camera.position.z = 5;
-   
-    // this.scene.add(this.sphereMesh);
-
-	// les écouteurs
-
-	var self = this;
-	this.backBtn.addEventListener("click", (function(){
-		if( this.mapManager.currentMap ){
-			this.mapManager.currentMap.closePhoto();
-		}
-	}).bind(this))
-
-	this.sidebarBtn.addEventListener("click", function(){
-		self.sidebar.classList.toggle("photo__sidebar--display");
-		this.classList.toggle("photo__sidebar-close--reverse");
-	});
-	document.addEventListener("resize", this.onDocumentResize.bind(this), false);
-	document.addEventListener("mousedown", this.onDocumentMouseDown.bind(this), false);
-	document.addEventListener("mousemove", this.onDocumentMouseMove.bind(this), false);
-	document.addEventListener("mouseup", this.onDocumentMouseUp.bind(this), false);
-
-
-	document.addEventListener("touchstart", this.onDocumentMouseDown.bind(this), false);
-	document.addEventListener("touchmove", this.onDocumentMouseMove.bind(this), false);
-	document.addEventListener("touchend", this.onDocumentMouseUp.bind(this), false);
+	
+	this.initSphereMesh();
+    this.initParams();
+	this.initEvents();
 }
 
 
 PhotoManager.prototype = {
 
+
 	// Set the params of sphere
 	initSphereMesh: function(){
 
 		// création d'une sphère goémétrique
-	    this.geo = new THREE.SphereGeometry(40, 32, 32);
+		this.geo = new THREE.SphereGeometry(40, 32, 32);
+		
 	    // this.geo.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));
 
 	    // création d'une sphère matérielle
@@ -1061,8 +1050,7 @@ PhotoManager.prototype = {
 
 	 	this.sphereMesh = new THREE.Mesh(this.geo, this.material);
 	    this.sphereMesh.name = "photo";
-
-
+		this.sphereMesh.scale.x *= -1
 	    this.scene.add(this.sphereMesh);
 	},
 
@@ -1121,6 +1109,12 @@ PhotoManager.prototype = {
 		}).bind(this), 600)
 	},
 
+	setBackButton: function(marker) {
+		var img = this.backBtn.querySelector(".photo__thumbnail-back-img");
+		var markerContainer = this.backBtn.querySelector(".marker__container");
+		var proto = ``
+	},
+
 	onPhotoLoad: function(texture) {
 		this.material.map = texture;
 		this.el.classList.remove("photo--loading");		
@@ -1129,13 +1123,14 @@ PhotoManager.prototype = {
 
 	load: function(marker){
 		this.el.classList.add("photo--loading");
-
+		this.setBackButton(marker);
 		var self = this;
 		var loader = new THREE.TextureLoader(); 
 		loader.load( marker.target, this.onPhotoLoad.bind(this) );
 	},
 
 	render: function(){
+		// console.log(this)
 		if( this.isDisplay ){
 			requestAnimationFrame(this.render.bind(this));// enregistre la fonction pour un appel récurrent 
 		}
@@ -1168,6 +1163,7 @@ PhotoManager.prototype = {
 	    this.renderer.render(this.scene, this.camera);
 	},
 
+
 	homogeneiseEvent: function(event){
 		return event.touches && event.touches.length ? {
 			x: event.touches[0].clientX,
@@ -1177,6 +1173,10 @@ PhotoManager.prototype = {
 			y: event.clientY
 		};
 	},
+
+	/**
+	 * Events
+	 */
 
 	onDocumentMouseDown: function(event) {
 	    event.preventDefault();
@@ -1213,7 +1213,32 @@ PhotoManager.prototype = {
 
 	onDocumentResize: function(){
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
-	}	
+	},
+
+	initEvents: function(){
+		var self = this;
+
+		this.backBtn.addEventListener("click", (function(){
+			if( this.mapManager.currentMap ){
+				this.mapManager.currentMap.closePhoto();
+			}
+		}).bind(this))
+	
+		this.sidebarBtn.addEventListener("click", function(){
+			self.sidebar.classList.toggle("photo__sidebar--display");
+			this.classList.toggle("photo__sidebar-close--reverse");
+		});
+
+		document.addEventListener("resize", this.onDocumentResize.bind(this), false);
+		document.addEventListener("mousedown", this.onDocumentMouseDown.bind(this), false);
+		document.addEventListener("mousemove", this.onDocumentMouseMove.bind(this), false);
+		document.addEventListener("mouseup", this.onDocumentMouseUp.bind(this), false);
+	
+	
+		document.addEventListener("touchstart", this.onDocumentMouseDown.bind(this), false);
+		document.addEventListener("touchmove", this.onDocumentMouseMove.bind(this), false);
+		document.addEventListener("touchend", this.onDocumentMouseUp.bind(this), false);
+	}
 
 }
 
@@ -1222,6 +1247,12 @@ const TOP= 4
 const BOTTOM= 5
 const REGULAR= 2
 
+/**
+ * A represent a floor
+ * @param {HTMLNode} el 
+ * @param {Manager} manager 
+ * @var {Marker[]} markers
+ */
 function MapItem(el, manager) {
 	this.el = el;
 	this.id = this.el.getAttribute("id");
@@ -1244,15 +1275,34 @@ function MapItem(el, manager) {
 
 MapItem.prototype = {
 
+	/**
+	 * Reference width & height
+	 * @returns {int}
+	 */
 	get width(){
 		return this._width;
-		// return this.manager.isResponsive ? window.innerWidth : this._width;
 	},
 
 	get height(){
 		return this._height;
-		// return this.manager.isResponsive ? window.innerHeight : this._height;
 	},
+
+	set fade(isFade) {
+		if( isFade ){
+			this.el.classList.add("map--fade");
+		} else {
+			this.el.classList.remove("map--fade");
+		}
+	},
+
+	clone: function(map, options) {
+		var parsedEl = document.createElement("fragment").innerHTML = this.el.innerHTML;
+		return new Map(parsedEl.firstChild, this.manager)
+	},
+
+	/**
+	 * Init marker events
+	 */
 
 	initEvents: function(){
 		for(var i=0; i<this.markers.length; i++){
@@ -1266,41 +1316,54 @@ MapItem.prototype = {
 			self.openPhoto(marker);
 		}, false)
 	},
-
+	
 	openPhoto: function(marker){
+		//console.log(jQuery);
+
+		// $.ajax({
+		// 	url: "http://yourwebsite.com",
+		// 	success: function( data ) {
+		// 		alert( 'Your home page has ' + $(data).find('div').length + ' div elements.');
+		// 	}
+		// })
+		var self = this;
 		var position = marker.el.getBoundingClientRect();
 
-			
-		console.log(this.manager.markerUtil.el.style)
+		// Prepare zoom animation 
 		this.manager.markerUtil.position = {x: position.x, y: position.y };
 		this.manager.markerUtil.display();
-		console.log(this.manager.markerUtil.el.style)
-
 		this.manager.markerUtil.el.classList.remove("marker--no-transition");
+		
+		// Update & load current marker
 		this.currentMarker = marker;
 		this.manager.photoManager.load(marker);
-		var self = this;
+		
+		// Launch zoom animation
 		setTimeout(function(){
 			self.manager.markerUtil.zoom();
 		}, 40)
 	},
 
 	closePhoto: function(){
+		var self = this;
 		if( this.currentMarker ){
 
+			// Launch leave animation
 			this.manager.markerUtil.unzoom();
-			
 			this.manager.photoManager.hide();
 			this.currentMarker = null;
-			var self = this;
+			
+			// Reset views 
 			setTimeout(function(){
 				self.manager.markerUtil.hide();
 				self.manager.markerUtil.el.classList.add("marker--no-transition");
 			}, 1100)
-
-			
 		}
 	},
+
+	/**
+	 * Send map to top or bottom (hide)
+	 */
 
 	toTop: function() {
 		this.el.classList.remove("map--bottom")
@@ -1320,6 +1383,9 @@ MapItem.prototype = {
 		this.mode = BOTTOM
 	},
 
+	/**
+	 * Send map to it's regular place
+	 */
 	toRegular: function(){
 		this.setPosition();
 		if( this.mode == SELECT ){
@@ -1332,23 +1398,27 @@ MapItem.prototype = {
 		this.mode = REGULAR
 	},
 
+	/**
+	 * Launch focus action
+	 */
 	select: function(){
 		if( this.mode != SELECT ){
-			
-			// this.el.classList.remove("map--top");
-			// this.el.classList.remove("map--bottom");
-			// this.el.classList.add("map--select");
-
+		
+			// Clean all behaviours (map--top, map--bottom) & select
 			this.el.className = "map map--select"
-				
+			
+			// Remove transformation
 			this.cleanPosition();
 			this.mode = SELECT
-			this.fade(false);
+			this.fade = false;
 			this.displayMarkers();
-		
-			
 		}
 	},
+
+
+	/**
+	 * onresize callback
+	 */
 
 	refreshBoundaries: function(){
 		this._width = this.el.offsetWidth;
@@ -1361,6 +1431,10 @@ MapItem.prototype = {
 			this.markers[i].updateStyle();
 		}
 	},
+
+	/**
+	 * Manage markers
+	 */
 
 	hideMarkers: function() {
 		for(var i=0; i<this.markers.length; i++){
@@ -1383,23 +1457,24 @@ MapItem.prototype = {
 		}
 	},
 
-	cleanPosition: function(){
-		this.el.style = `background-image: url("${this.imageUrl}");`;
+	/**
+	 * Update styles
+	 */
+
+	cleanPosition: function() {
+		this.el.style.transform = null
+	},
+
+	setBackground: function(){
+		this.el.style.backgroundImage = `url("${this.imageUrl}")`;
 	},
 
 	setPosition: function(translate) {
 		if( translate ) this.translate = translate; 
-		this.el.style = `transform: translateX(-50%) translateY(-50%) rotateX(75deg) rotateZ(10deg) scale(0.9) translateZ(${this.translate}px); background-image: url("${this.imageUrl}");`
-	},
-
-	fade: function(isFade){
-		if( isFade ){
-			this.el.classList.add("map--fade");
-		} else {
-			this.el.classList.remove("map--fade");
-		}
-		
+		this.el.style.backgroundImage = `url("${this.imageUrl}")`
+		this.el.style.transform = `translateX(-50%) translateY(-50%) rotateX(75deg) rotateZ(10deg) scale(0.9) translateZ(${this.translate}px)`
 	}
+
 }
 
 function NavMap (manager) {
@@ -1506,7 +1581,7 @@ MapManager.prototype = {
 
 		for(var i = 0; i < this.maps.length; i++){
 			this.maps[i].setPosition(-1*i * this.config.step - h/2 + this.offset);
-			this.maps[i].fade(false);
+			this.maps[i].fade = false;
 		}
 		this.currentMap = null;
 		this.mode = "regular";
@@ -1529,9 +1604,9 @@ MapManager.prototype = {
 			}
 
 			if( rank == i ){
-				this.maps[i].fade(false);
+				this.maps[i].fade = false;
 			} else {
-				this.maps[i].fade(true);
+				this.maps[i].fade = true;
 			}
 			this.maps[i].setPosition(-1*i * this.config.step - h/2 + this.offset + decal);
 		}

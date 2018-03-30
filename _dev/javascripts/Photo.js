@@ -42,8 +42,9 @@ PhotoManager.prototype = {
 	initSphereMesh: function(){
 
 		// création d'une sphère goémétrique
-	    this.geo = new THREE.SphereGeometry(40, 32, 32);
-	    this.geo.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));
+		this.geo = new THREE.SphereGeometry(40, 32, 32);
+		
+	    // this.geo.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));
 
 	    // création d'une sphère matérielle
 	    this.material = new THREE.MeshBasicMaterial({
@@ -52,7 +53,7 @@ PhotoManager.prototype = {
 
 	 	this.sphereMesh = new THREE.Mesh(this.geo, this.material);
 	    this.sphereMesh.name = "photo";
-
+		this.sphereMesh.scale.x *= -1
 	    this.scene.add(this.sphereMesh);
 	},
 
@@ -132,6 +133,7 @@ PhotoManager.prototype = {
 	},
 
 	render: function(){
+		// console.log(this)
 		if( this.isDisplay ){
 			requestAnimationFrame(this.render.bind(this));// enregistre la fonction pour un appel récurrent 
 		}

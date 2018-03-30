@@ -50,7 +50,7 @@ MapManager.prototype = {
 
 		for(var i = 0; i < this.maps.length; i++){
 			this.maps[i].setPosition(-1*i * this.config.step - h/2 + this.offset);
-			this.maps[i].fade(false);
+			this.maps[i].fade = false;
 		}
 		this.currentMap = null;
 		this.mode = "regular";
@@ -73,9 +73,9 @@ MapManager.prototype = {
 			}
 
 			if( rank == i ){
-				this.maps[i].fade(false);
+				this.maps[i].fade = false;
 			} else {
-				this.maps[i].fade(true);
+				this.maps[i].fade = true;
 			}
 			this.maps[i].setPosition(-1*i * this.config.step - h/2 + this.offset + decal);
 		}

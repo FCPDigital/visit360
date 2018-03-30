@@ -18,7 +18,7 @@ class VisitMarker {
 		if($arg instanceof WP_Post){
 			$post = $arg;
 		}
-
+		$this->id = $post->ID;
 		$this->post = $post;
 		$this->img = get_the_post_thumbnail_url($this->post, "original");
 
@@ -39,7 +39,8 @@ class VisitMarker {
 			"x" => $this->x,
 			"y" => $this->y,
 			"url" => $this->img,
-			"has_3d" => $this->has_3d 
+			"has_3d" => $this->has_3d,
+			"id" => $this->id
 		], JSON_UNESCAPED_SLASHES);
 	}
 
