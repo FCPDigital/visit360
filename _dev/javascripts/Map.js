@@ -76,13 +76,17 @@ MapItem.prototype = {
 	
 	openPhoto: function(marker){
 		//console.log(jQuery);
+		jQuery.post(
+			ajaxurl,
+			{
+				'action': 'mon_action',
+				'param': marker.id
+			},
+			function(response){
+					console.log(response);
+				}
+		);
 
-		// $.ajax({
-		// 	url: "http://yourwebsite.com",
-		// 	success: function( data ) {
-		// 		alert( 'Your home page has ' + $(data).find('div').length + ' div elements.');
-		// 	}
-		// })
 		var self = this;
 		var position = marker.el.getBoundingClientRect();
 

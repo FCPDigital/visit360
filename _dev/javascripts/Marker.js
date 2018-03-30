@@ -7,7 +7,8 @@ function offset(elem) {
     while (elem = elem.offsetParent) {
         x += elem.offsetLeft;
         y += elem.offsetTop;
-    }
+	}
+	
 
     return { x: x, y: y };
 }
@@ -47,6 +48,7 @@ Marker.prototype = {
 			x: this.data.x, 
 			y: this.data.y
 		}
+		this.id = this.data.id;
 		this.target = this.data.url;
 	},
 

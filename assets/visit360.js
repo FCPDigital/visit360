@@ -930,7 +930,8 @@ function offset(elem) {
     while (elem = elem.offsetParent) {
         x += elem.offsetLeft;
         y += elem.offsetTop;
-    }
+	}
+	
 
     return { x: x, y: y };
 }
@@ -970,6 +971,7 @@ Marker.prototype = {
 			x: this.data.x, 
 			y: this.data.y
 		}
+		this.id = this.data.id;
 		this.target = this.data.url;
 	},
 
@@ -1319,13 +1321,17 @@ MapItem.prototype = {
 	
 	openPhoto: function(marker){
 		//console.log(jQuery);
+		jQuery.post(
+			ajaxurl,
+			{
+				'action': 'mon_action',
+				'param': marker.id
+			},
+			function(response){
+					console.log(response);
+				}
+		);
 
-		// $.ajax({
-		// 	url: "http://yourwebsite.com",
-		// 	success: function( data ) {
-		// 		alert( 'Your home page has ' + $(data).find('div').length + ' div elements.');
-		// 	}
-		// })
 		var self = this;
 		var position = marker.el.getBoundingClientRect();
 

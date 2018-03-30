@@ -22,8 +22,8 @@ class Visit360 {
 		$this->registerShortcodes();
 		$this->registerFields();
 		$this->registerAssets();
-
-	}
+		$this->registerAjax();
+	}	
 
 
 	public function generatePostType()
@@ -84,10 +84,32 @@ class Visit360 {
 
 		// use the registered jquery and style above
 		add_action('wp_enqueue_scripts', 'enqueue_style');
-
+		
 		function enqueue_style(){
 		   wp_enqueue_script('visit360_scripts');
 		   wp_enqueue_style( 'visit360_style' );
+		   wp_localize_script('visit360_scripts', 'ajaxurl', admin_url( 'admin-ajax.php' ) );
+		}
+	}
+
+	public function registerAjax()
+	{
+		add_action( 'wp_ajax_mon_action', 'mon_action' );
+		add_action( 'wp_ajax_nopriv_mon_action', 'mon_action' );
+
+		function mon_action() {
+
+			$param = $_POST['param'];
+		
+			$post = get_post($param);
+			$response = array(
+				"id" => $post->ID,
+				"title" => get_the_title($post),
+				"content" => $post->post_content
+			);
+			echo json_encode($response, JSON_UNESCAPED_SLASHES);
+
+			die();
 		}
 	}
 
