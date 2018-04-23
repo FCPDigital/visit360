@@ -33,9 +33,12 @@ class VisitMap {
 			'post_type' => 'visit360_map'
 		));
 		$result = [];
-		foreach($maps as $key => $map) 
+		if( $maps )
 		{
-			array_push($result, new VisitMap($map));
+			foreach($maps as $key => $map) 
+			{
+				array_push($result, new VisitMap($map));
+			}
 		}
 		return $result; 
 	}
@@ -46,9 +49,12 @@ class VisitMap {
 		$markers = get_field("markers", $map->getPost());
 		
 		$result = [];
-		foreach($markers as $key => $marker) 
+		if( $markers ) 
 		{
-			array_push($result, new VisitMarker($marker));
+			foreach($markers as $key => $marker) 
+			{
+				array_push($result, new VisitMarker($marker));
+			}
 		}
 		return $result; 
 	}

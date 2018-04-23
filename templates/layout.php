@@ -10,7 +10,7 @@
       <div class="map__nav">
       
         <?php foreach ($maps as $key => $map) { ?>
-          <h2 class="map__nav-item" data-map="<?php echo $map->id; ?>"><?php echo $map->title; ?></h2>    
+          <p class="map__nav-item" data-map="<?php echo $map->id; ?>"><?php echo $map->title; ?></p>    
         <?php } ?>
       </div>
 

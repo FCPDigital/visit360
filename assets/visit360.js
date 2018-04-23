@@ -1159,6 +1159,7 @@ PhotoManager.prototype = {
 
 	setBackButton: function(marker) {
 		var img = this.backBtn.querySelector(".photo__thumbnail-back-img");
+		img.src = marker.map.imageUrl;
 		var markerContainer = this.backBtn.querySelector(".marker__container");
 		var proto = ``
 	},
