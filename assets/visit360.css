@@ -340,20 +340,21 @@
       .photo__sidebar-close i {
         font-size: 40px; }
     .photo__sidebar-title {
-      margin: 30px 0 20px 0;
+      margin: 60px 0 20px 0;
       letter-spacing: 0;
       font-weight: bold;
-      color: white;
-      text-align: left; }
+      color: #ffed00;
+      text-align: left;
+      font-size: 1.7em; }
     .photo__sidebar-content {
       font-weight: 100;
       line-height: 1.5;
       letter-spacing: 0px; }
   .photo--loading {
-    z-index: 1000;
+    z-index: 1001;
     opacity: 1; }
   .photo--display {
-    z-index: 1000; }
+    z-index: 1001; }
     .photo--display .photo__canvas {
       opacity: 1; }
 
