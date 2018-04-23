@@ -1719,19 +1719,29 @@ MapManager.prototype = {
 		this.nav.desktop();
 	},
 
+	refreshAllMarkersPosition: function() {
+		for(var i=0; i<this.maps.length; i++) {
+			this.maps[i].refreshMarkerPositions();
+		}
+	},
+
 	updateBoundaries: function(){
 		var w = this.el.offsetWidth; 
-		if( w < this.config.width + this.config.navWidth ) {
+		if( w < this.config.width + this.config.navWidth || window.innerWidth < 650 ) {
 			this.responsive();
 		} else {
 			this.desktop();
 		}
 
+		this.refreshAllMarkersPosition();
+
 		switch (this.mode){
 			case "regular": this.regular(); break;
 			case "focus": this.focus(); break;
-			case "map": setTimeout(this.currentMap.refreshMarkerPositions.bind(this.currentMap), 1000); break;
 		}
+
+		setTimeout(this.refreshAllMarkersPosition.bind(this), 500)
+
 		for(var i=0; i<this.maps.length; i++){
 			this.maps[i].refreshBoundaries();
 		}
