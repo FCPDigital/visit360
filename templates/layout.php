@@ -7,10 +7,10 @@
     <div class="visite__util ">
       <button id="close-map-button" class="map__close"></button>
       
-      <div class="map__nav">
+      <div class="map__nav nav">
       
         <?php foreach ($maps as $key => $map) { ?>
-          <p class="map__nav-item" data-map="<?php echo $map->id; ?>"><?php echo $map->title; ?></p>    
+          <p class="nav__item <?php if($key === count($maps) - 1) : echo "nav__item--last"; endif; ?>" data-map="<?php echo $map->id; ?>"><?php echo $map->title; ?></p>    
         <?php } ?>
       </div>
 
