@@ -25,7 +25,9 @@ class Visit360 {
 		$this->registerAjax();
 	}	
 
-
+	/**
+	 * Create programmaticaly the post types for maps & markers
+	 */
 	public function generatePostType()
 	{
 
@@ -56,13 +58,17 @@ class Visit360 {
 		);
 	}
 
-
+	/**
+	 * Shortcode [visit]
+	 */
 	public function shortcode_visit() {
 		$maps = VisitMap::findAll();
-		echo include __DIR__."/templates/layout.php";
+		echo require __DIR__."/templates/layout.php";
 	}
 
-
+	/**
+	 * Register shortcodes
+	 */
 	public function registerShortcodes(){
 		add_shortcode( 
 			'visit', array( 
@@ -71,6 +77,9 @@ class Visit360 {
 		);
 	}
 
+	/**
+	 * Register scripts & stylesheets
+	 */
 	public function registerAssets()
 	{
 		add_action('init', 'register_script');
@@ -92,6 +101,9 @@ class Visit360 {
 		}
 	}
 
+	/**
+	 * Register ajax request 
+	 */
 	public function registerAjax()
 	{
 		add_action( 'wp_ajax_mon_action', 'mon_action' );
@@ -113,6 +125,9 @@ class Visit360 {
 		}
 	}
 
+	/**
+	 * Register ACF Fields
+	 */
 	public function registerFields()
 	{
 
