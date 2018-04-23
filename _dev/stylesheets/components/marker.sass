@@ -2,64 +2,127 @@
 
 	display: block
 	position: absolute
-	transform: translateZ(20px) translateX(-50%) translateY(-50%) scale(0)
-	border-radius: 100%
-	transform-style: preserve-3d
-	background-color: $marker-color
-	transition: all 1s
-
-	width: 15px
-	height: 15px
-
-	// animation-name: "bounce"
-	animation-duration: 3s
-	animation-delay: 2s
-	animation-timing-function: ease-in-out
-	animation-iteration-count: infinite
-	
 	opacity: 0
-
-	cursor: zoom-in
-
-	&::after 
-		content: ""
-		display: block
-		position: absolute
-		top: 50%
-		left: 50%
-		transform: translateX(-50%) translateY(-50%)
-		border: 2px solid $marker-color
-		width: 25px
-		height: 25px
-		border-radius: 100%
-		transition: .3s
-	
-
-	&--overall
-		z-index: 1
-		position: fixed
-
-	&--no-transition
-		transition: none !important
-
+	pointer-events: none
 
 	&--display
+		pointer-events: all
 		opacity: 1
-		transform: translateZ(20px) translateX(-50%) translateY(-50%) scale(1)
-		&:hover
-			transform: translateZ(20px) translateX(-50%) translateY(-50%) scale(1.3)
+		.marker__point
+			transform: translateZ(20px) translateX(-50%) translateY(-50%) scale(1)
+			&:hover
+				transform: translateZ(20px) translateX(-50%) translateY(-50%) scale(1.3)
+		
+		.marker__title
+			opacity: 1
+			transform: translateY(0)
 
-	&--zoom
-		animation: none !important
-		width: 200vw !important
-		height: 200vw !important
-		top: 50% !important
-		left: 50% !important
-		background-color: #000 !important
-		transform: scale(1) translateX(-51%) translateY(-51%) !important
-		&::after
-			display: none
+	&__point
+		transform: translateZ(20px) translateX(-50%) translateY(-50%) scale(0)
+		border-radius: 100%
+		transform-style: preserve-3d
+		background-color: $marker-color
+		transition: all 1s
+		animation:
+			duration: 3s
+			delay: 2s
+			timing-function: ease-in-out
+			iteration-count: infinite
+		cursor: zoom-in
+		width: 15px
+		height: 15px
 
+		&::after 
+			content: ""
+			display: block
+			position: absolute
+			top: 50%
+			left: 50%
+			transform: translateX(-50%) translateY(-50%)
+			border: 2px solid $marker-color
+			width: 25px
+			height: 25px
+			border-radius: 100%
+			transition: .3s
+
+
+		&--no-transition
+			transition: none !important
+
+		&--zoom
+			animation: none !important
+			width: 200vw !important
+			height: 200vw !important
+			top: 50% !important
+			left: 50% !important
+			background-color: #000 !important
+			transform: scale(1) translateX(-51%) translateY(-51%) !important
+			&::after
+				display: none
+
+
+	&--overall
+		z-index: 2
+		position: fixed
+
+	&__title
+		color: $color-primary
+		position: absolute
+		bottom: 30px
+		left: -14px
+		width: 90px
+		font-size: 15px
+		font-weight: bold
+		transform: translateY(-20px)
+		opacity: 0
+		transition: .4s ease-in
+
+	&__bubble
+		width: 150px
+		height: 140px
+		position: absolute
+		right: 35px
+		top: -13px
+		opacity: 0
+		transition: .4s
+		z-index: 3
+		transform: translateY(20px)
+		opacity: 0
+		transition: .3s ease-in-out
+		pointer-events: none
+
+		&--visible
+			display: block
+			opacity: 1
+			transform: translateY(0)
+		
+		&--hidden
+			display: block
+			opacity: 0
+			transform: translateY(20px)
+
+		&--bottom
+			top: auto
+			bottom: 10px
+			&.marker__bubble--hidden
+				transform: translateY(-20px)
+
+
+		
+		&-title
+			padding: 10px
+			height: 25px
+			box-sizing: content-box
+			text-align: center
+			background-color: $color-primary
+			color: black
+		
+		&-img
+			width: 100%
+			height: calc(100% - 35px)
+			background-size: cover
+			background-repeat: no-repeat
+			background-position: center
 
 
 

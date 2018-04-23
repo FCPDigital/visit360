@@ -27,10 +27,11 @@ MapManager.prototype = {
 	},
 
 	createMarkerUtil: function(){
-		var el = document.createElement("span");
+		var el = document.createElement("div");
 		el.id = "visite-marker-transition-util"; 
 		el.className = "marker marker--overall marker--no-transition";
 		document.body.appendChild(el);
+		el.innerHTML = "<div class='marker__point'></div>"
 		this.markerUtil = new Marker(el, null);
 	},
 

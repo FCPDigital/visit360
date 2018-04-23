@@ -25,7 +25,14 @@
           data-url="<?php echo $map->img; ?>">
           <div class="marker__container">
             <?php foreach($map->markers as $key => $marker) { ?>
-              <span class="marker" data-marker='<?php echo $marker; ?>'></span>
+              <div class="marker" data-marker='<?php echo $marker; ?>'>
+                <div class="marker__point"></div>
+                <p class="marker__title"><?php echo $marker->title; ?></p>
+                <div class="marker__bubble marker__bubble--hidden">
+                  <p class="marker__bubble-title"><?php echo $marker->title; ?></p>
+                  <div class="marker__bubble-img" style="background-image: url('<?php echo $marker->thumbnail; ?>')"></div>
+                </div>
+              </div>
             <?php } ?>
           </div>
         </div>

@@ -175,6 +175,26 @@ class Visit360 {
 						'message' => '',
 						'default_value' => 1,
 					),
+					array (
+						'key' => 'field_5adde1df2044a',
+						'label' => 'Photo 3D',
+						'name' => 'photo_3d',
+						'type' => 'image',
+						'conditional_logic' => array (
+							'status' => 1,
+							'rules' => array (
+								array (
+									'field' => 'field_5a9ff286af851',
+									'operator' => '==',
+									'value' => '1',
+								),
+							),
+							'allorany' => 'all',
+						),
+						'save_format' => 'url',
+						'preview_size' => 'full',
+						'library' => 'all',
+					)
 				),
 				'location' => array (
 					array (
@@ -189,7 +209,7 @@ class Visit360 {
 				),
 				'options' => array (
 					'position' => 'normal',
-					'layout' => 'no_box',
+					'layout' => 'default',
 					'hide_on_screen' => array (
 					),
 				),

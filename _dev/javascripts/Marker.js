@@ -16,9 +16,17 @@ function offset(elem) {
 
 function Marker(el, map, options) {
 	this.el = el;
+	this.point = this.el.querySelector(".marker__point");
+	console.log(this.el, this.point);
+	this.bubble = this.el.querySelector(".marker__bubble");
 	this.map = map;
 	this.options = options ? options : {};
 	this.extractInfo();
+	
+	if(this.point) {	 
+		this.setBubblePosition();
+		this.initEvents();
+	}
 }
 
 
@@ -34,7 +42,13 @@ Marker.prototype = {
 		}
 		
 		return `top: ${this.position.y}px; left: ${this.position.x}px;`	
+	},
 
+	setBubblePosition: function() {
+		var limit = 1 - (140 / 450); // 140 (bubble height) 450 (map height)
+		if( this.position.y > limit ) {
+			this.bubble.classList.add("marker__bubble--bottom");
+		}
 	},
 
 	extractInfo: function(){
@@ -49,11 +63,30 @@ Marker.prototype = {
 			y: this.data.y
 		}
 		this.id = this.data.id;
-		this.target = this.data.url;
+		this.target = this.data.photo;
+		this.thumbnail = this.data.thumbnail;
+	},
+
+	initEvents: function() {
+		var self = this;
+		this.point.addEventListener("mouseenter", function() {
+			self.focus();
+		});
+		this.point.addEventListener("mouseleave", function(){
+			self.unfocus();
+		});
 	},
 
 	updateStyle: function(){
 		this.el.setAttribute("style", this.style);
+	},
+
+	focus: function() {
+		this.bubble.classList.replace("marker__bubble--hidden", "marker__bubble--visible");
+	},
+
+	unfocus: function() {
+		this.bubble.classList.replace("marker__bubble--visible", "marker__bubble--hidden");
 	},
 
 	display: function(){
@@ -63,14 +96,18 @@ Marker.prototype = {
 	
 	hide: function(){
 		this.el.classList.remove("marker--display");
-	},
+	},	
 
 	zoom: function(){
-		this.el.classList.add("marker--zoom");
+		if( this.point ){
+			this.point.classList.add("marker__point--zoom");
+		}
 	},
 
 	unzoom: function(){
-		this.el.classList.remove("marker--zoom");
+		if( this.point ){
+			this.point.classList.remove("marker__point--zoom");
+		}
 	}
 
 }
