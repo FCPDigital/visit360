@@ -189,6 +189,7 @@ MapItem.prototype = {
 		this.refreshBoundaries();
 		for(var i=0; i<this.markers.length; i++){
 			this.markers[i].updateStyle();
+			this.markers[i].unfocus();
 		}
 	},
 

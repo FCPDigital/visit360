@@ -993,7 +993,9 @@ Marker.prototype = {
 	initEvents: function() {
 		var self = this;
 		this.point.addEventListener("mouseenter", function() {
-			self.focus();
+			if( window.innerWidth > 650 ){
+				self.focus();
+			}
 		});
 		this.point.addEventListener("mouseleave", function(){
 			self.unfocus();
@@ -1005,11 +1007,15 @@ Marker.prototype = {
 	},
 
 	focus: function() {
-		this.bubble.classList.replace("marker__bubble--hidden", "marker__bubble--visible");
+		if( this.bubble ){
+			this.bubble.classList.replace("marker__bubble--hidden", "marker__bubble--visible");
+		}
 	},
 
 	unfocus: function() {
-		this.bubble.classList.replace("marker__bubble--visible", "marker__bubble--hidden");
+		if( this.bubble ){
+			this.bubble.classList.replace("marker__bubble--visible", "marker__bubble--hidden");
+		}
 	},
 
 	display: function(){
@@ -1512,6 +1518,7 @@ MapItem.prototype = {
 		this.refreshBoundaries();
 		for(var i=0; i<this.markers.length; i++){
 			this.markers[i].updateStyle();
+			this.markers[i].unfocus();
 		}
 	},
 
