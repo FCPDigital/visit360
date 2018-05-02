@@ -27,6 +27,7 @@ gulp.task('js:watch', function () {
 
 var scripts = [
   "vendor/three.min.js",
+  "_dev/javascripts/global.js",
   "_dev/javascripts/Marker.js",
   "_dev/javascripts/Post.js",
   "_dev/javascripts/Photo.js",

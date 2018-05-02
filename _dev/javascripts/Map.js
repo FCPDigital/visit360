@@ -23,7 +23,7 @@ function MapItem(el, manager) {
 	this._width = this.el.offsetWidth;
 	this._height = this.el.offsetHeight;
 
-	var markers = this.el.querySelectorAll(".marker");
+	var markers = this.el.querySelectorAll(".v360-marker");
 
 	for(var i=0; i<markers.length; i++){
 		this.markers.push(new Marker(markers[i], this));
@@ -48,9 +48,9 @@ MapItem.prototype = {
 
 	set fade(isFade) {
 		if( isFade ){
-			this.el.classList.add("map--fade");
+			this.el.classList.add("v360-map--fade");
 		} else {
-			this.el.classList.remove("map--fade");
+			this.el.classList.remove("v360-map--fade");
 		}
 	},
 
@@ -82,7 +82,6 @@ MapItem.prototype = {
 	initEvent: function(marker){
 		var self = this;
 		marker.el.addEventListener("click",function(event){
-			console.log("Click marker")
 			event.preventDefault();
 			self.isOpenningPhoto = true; 
 			self.openPhoto(marker);
@@ -109,7 +108,7 @@ MapItem.prototype = {
 		if( this.manager ) {
 			this.manager.markerUtil.position = {x: position.x, y: position.y };
 			this.manager.markerUtil.display();
-			this.manager.markerUtil.el.classList.remove("marker--no-transition");
+			this.manager.markerUtil.el.classList.remove("v360-marker--no-transition");
 			this.manager.photoManager.load(marker);
 		}
 		
@@ -141,7 +140,7 @@ MapItem.prototype = {
 			setTimeout(function(){
 				if( self.manager ){
 					self.manager.markerUtil.hide();
-					self.manager.markerUtil.el.classList.add("marker--no-transition");
+					self.manager.markerUtil.el.classList.add("v360-marker--no-transition");
 				}
 			}, 1100)
 		}
@@ -152,18 +151,18 @@ MapItem.prototype = {
 	 */
 
 	toTop: function() {
-		this.el.classList.remove("map--bottom")
-		this.el.classList.remove("map--select")
-		this.el.classList.add("map--top")
+		this.el.classList.remove("v360-map--bottom")
+		this.el.classList.remove("v360-map--select")
+		this.el.classList.add("v360-map--top")
 		this.hideMarkers();
 		this.cleanPosition();
 		this.mode = TOP
 	},
 
 	toBottom: function() {
-		this.el.classList.remove("map--top")
-		this.el.classList.remove("map--select")
-		this.el.classList.add("map--bottom")
+		this.el.classList.remove("v360-map--top")
+		this.el.classList.remove("v360-map--select")
+		this.el.classList.add("v360-map--bottom")
 		this.hideMarkers();
 		this.cleanPosition();
 		this.mode = BOTTOM
@@ -178,9 +177,9 @@ MapItem.prototype = {
 			this.hideMarkers();
 		}
 
-		this.el.classList.remove("map--top")
-		this.el.classList.remove("map--bottom")
-		this.el.classList.remove("map--select")
+		this.el.classList.remove("v360-map--top")
+		this.el.classList.remove("v360-map--bottom")
+		this.el.classList.remove("v360-map--select")
 		this.mode = REGULAR
 	},
 
@@ -191,7 +190,7 @@ MapItem.prototype = {
 		if( this.mode != SELECT ){
 		
 			// Clean all behaviours (map--top, map--bottom) & select
-			this.el.className = "map map--select"
+			this.el.className = "v360-map v360-map--select"
 			
 			// Remove transformation
 			this.cleanPosition();

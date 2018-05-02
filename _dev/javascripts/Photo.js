@@ -14,9 +14,10 @@
  */
 function PhotoManager(mapManager) {
 	this.mapManager = mapManager;
-	this.el = document.querySelector(".photo");
-	this.canvas = document.querySelector("#photo");
-	this.backBtn = document.querySelector(".photo__thumbnail-back");
+	this.el = document.querySelector(".v360-photo");
+	this.el = document.querySelector(".v360-photo");
+	this.canvas = document.querySelector("#v360-photo");
+	this.backBtn = document.querySelector(".v360-photo__thumbnail-back");
 
 	this.post = new Post(this.el);
 
@@ -84,13 +85,13 @@ PhotoManager.prototype = {
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
 		setTimeout((function(){
 			this.isDisplay = true; 
-			this.el.classList.add("photo--display");
-			this.backBtn.classList.add("photo__thumbnail-back--display");
+			this.el.classList.add("v360-photo--display");
+			this.backBtn.classList.add("v360-photo__thumbnail-back--display");
 			this.render();
 			this.post.display = true
 			setTimeout((function(){
 				this.mapManager.currentMap.currentMarker.unzoom();
-				this.mapManager.container.classList.add("visite__archive--hide");
+				this.mapManager.container.classList.add("v360-visite__archive--hide");
 			}).bind(this), 1000)
 
 		}).bind(this), 1000)
@@ -104,10 +105,10 @@ PhotoManager.prototype = {
 	hide: function(){
 		this.isDisplay = false;
 		this.post.display = false
-		this.backBtn.classList.remove("photo__thumbnail-back--display");
+		this.backBtn.classList.remove("v360-photo__thumbnail-back--display");
 		setTimeout((function(){
-			this.el.classList.remove("photo--display"); 
-			this.mapManager.container.classList.remove("visite__archive--hide");
+			this.el.classList.remove("v360-photo--display"); 
+			this.mapManager.container.classList.remove("v360-visite__archive--hide");
 		}).bind(this), 600)
 	},
 
@@ -130,12 +131,12 @@ PhotoManager.prototype = {
 
 	onPhotoLoad: function(texture) {
 		this.material.map = texture;
-		this.el.classList.remove("photo--loading");		
+		this.el.classList.remove("v360-photo--loading");		
 		this.display();
 	},
 
 	load: function(marker){
-		this.el.classList.add("photo--loading");
+		this.el.classList.add("v360-photo--loading");
 		this.setBackButton(marker);
 		var self = this;
 		var loader = new THREE.TextureLoader(); 

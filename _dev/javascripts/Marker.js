@@ -16,8 +16,8 @@ function offset(elem) {
 
 function Marker(el, map, options) {
 	this.el = el;
-	this.point = this.el.querySelector(".marker__point");
-	this.bubble = this.el.querySelector(".marker__bubble");
+	this.point = this.el.querySelector(".v360-marker__point");
+	this.bubble = this.el.querySelector(".v360-marker__bubble");
 	this.map = map;
 	this.options = options ? options : {};
 	this.extractInfo();
@@ -46,7 +46,7 @@ Marker.prototype = {
 	setBubblePosition: function() {
 		var limit = 1 - (140 / 450); // 140 (bubble height) 450 (map height)
 		if( this.position.y > limit ) {
-			this.bubble.classList.add("marker__bubble--bottom");
+			this.bubble.classList.add("v360-marker__bubble--bottom");
 		}
 	},
 
@@ -84,34 +84,34 @@ Marker.prototype = {
 
 	focus: function() {
 		if( this.bubble ){
-			this.bubble.classList.replace("marker__bubble--hidden", "marker__bubble--visible");
+			this.bubble.classList.replace("v360-marker__bubble--hidden", "v360-marker__bubble--visible");
 		}
 	},
 
 	unfocus: function() {
 		if( this.bubble ){
-			this.bubble.classList.replace("marker__bubble--visible", "marker__bubble--hidden");
+			this.bubble.classList.replace("v360-marker__bubble--visible", "v360-marker__bubble--hidden");
 		}
 	},
 
 	display: function(){
 		this.updateStyle();
-		this.el.classList.add("marker--display");
+		this.el.classList.add("v360-marker--display");
 	},
 	
 	hide: function(){
-		this.el.classList.remove("marker--display");
+		this.el.classList.remove("v360-marker--display");
 	},	
 
 	zoom: function(){
 		if( this.point ){
-			this.point.classList.add("marker__point--zoom");
+			this.point.classList.add("v360-marker__point--zoom");
 		}
 	},
 
 	unzoom: function(){
 		if( this.point ){
-			this.point.classList.remove("marker__point--zoom");
+			this.point.classList.remove("v360-marker__point--zoom");
 		}
 	}
 

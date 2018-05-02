@@ -921,6 +921,9 @@ a.project(b)};this.unprojectVector=function(a,b){console.warn("THREE.Projector: 
 this.setClearColor=function(){};this.setSize=function(){}};l.SceneUtils={createMultiMaterialObject:function(){console.error("THREE.SceneUtils has been moved to /examples/js/utils/SceneUtils.js")},detach:function(){console.error("THREE.SceneUtils has been moved to /examples/js/utils/SceneUtils.js")},attach:function(){console.error("THREE.SceneUtils has been moved to /examples/js/utils/SceneUtils.js")}};l.LensFlare=function(){console.error("THREE.LensFlare has been moved to /examples/js/objects/Lensflare.js")};
 Object.defineProperty(l,"__esModule",{value:!0})});
 
+window.v360 = {
+    namespace: "v360-"
+}
 function offset(elem) {
     if(!elem) elem = this;
 
@@ -939,8 +942,8 @@ function offset(elem) {
 
 function Marker(el, map, options) {
 	this.el = el;
-	this.point = this.el.querySelector(".marker__point");
-	this.bubble = this.el.querySelector(".marker__bubble");
+	this.point = this.el.querySelector(".v360-marker__point");
+	this.bubble = this.el.querySelector(".v360-marker__bubble");
 	this.map = map;
 	this.options = options ? options : {};
 	this.extractInfo();
@@ -969,7 +972,7 @@ Marker.prototype = {
 	setBubblePosition: function() {
 		var limit = 1 - (140 / 450); // 140 (bubble height) 450 (map height)
 		if( this.position.y > limit ) {
-			this.bubble.classList.add("marker__bubble--bottom");
+			this.bubble.classList.add("v360-marker__bubble--bottom");
 		}
 	},
 
@@ -1007,34 +1010,34 @@ Marker.prototype = {
 
 	focus: function() {
 		if( this.bubble ){
-			this.bubble.classList.replace("marker__bubble--hidden", "marker__bubble--visible");
+			this.bubble.classList.replace("v360-marker__bubble--hidden", "v360-marker__bubble--visible");
 		}
 	},
 
 	unfocus: function() {
 		if( this.bubble ){
-			this.bubble.classList.replace("marker__bubble--visible", "marker__bubble--hidden");
+			this.bubble.classList.replace("v360-marker__bubble--visible", "v360-marker__bubble--hidden");
 		}
 	},
 
 	display: function(){
 		this.updateStyle();
-		this.el.classList.add("marker--display");
+		this.el.classList.add("v360-marker--display");
 	},
 	
 	hide: function(){
-		this.el.classList.remove("marker--display");
+		this.el.classList.remove("v360-marker--display");
 	},	
 
 	zoom: function(){
 		if( this.point ){
-			this.point.classList.add("marker__point--zoom");
+			this.point.classList.add("v360-marker__point--zoom");
 		}
 	},
 
 	unzoom: function(){
 		if( this.point ){
-			this.point.classList.remove("marker__point--zoom");
+			this.point.classList.remove("v360-marker__point--zoom");
 		}
 	}
 
@@ -1044,10 +1047,10 @@ Marker.prototype = {
  */
 function Post(scope) {
     this._display = false;
-    this.sidebar = scope.querySelector(".photo__sidebar");
-    this.sidebarBtn = scope.querySelector(".photo__sidebar-close");
-    this.title = scope.querySelector(".photo__sidebar-title");
-    this.content = scope.querySelector(".photo__sidebar-content");
+    this.sidebar = scope.querySelector(".v360-photo__sidebar");
+    this.sidebarBtn = scope.querySelector(".v360-photo__sidebar-close");
+    this.title = scope.querySelector(".v360-photo__sidebar-title");
+    this.content = scope.querySelector(".v360-photo__sidebar-content");
     this.data = {};
     this.initEvents();
 }
@@ -1068,13 +1071,13 @@ Post.prototype = {
         if( isDisplay ) {
             console.log("Display")
             this._display = true; 
-            this.sidebar.classList.add("photo__sidebar--display");
-            this.sidebarBtn.classList.remove("photo__sidebar-close--reverse");
+            this.sidebar.classList.add("v360-photo__sidebar--display");
+            this.sidebarBtn.classList.remove("v360-photo__sidebar-close--reverse");
         } else {
             console.log("Hide")
             this._display = false; 
-            this.sidebar.classList.remove("photo__sidebar--display");
-            this.sidebarBtn.classList.add("photo__sidebar-close--reverse");
+            this.sidebar.classList.remove("v360-photo__sidebar--display");
+            this.sidebarBtn.classList.add("v360-photo__sidebar-close--reverse");
         }
     },
 
@@ -1102,9 +1105,10 @@ Post.prototype = {
  */
 function PhotoManager(mapManager) {
 	this.mapManager = mapManager;
-	this.el = document.querySelector(".photo");
-	this.canvas = document.querySelector("#photo");
-	this.backBtn = document.querySelector(".photo__thumbnail-back");
+	this.el = document.querySelector(".v360-photo");
+	this.el = document.querySelector(".v360-photo");
+	this.canvas = document.querySelector("#v360-photo");
+	this.backBtn = document.querySelector(".v360-photo__thumbnail-back");
 
 	this.post = new Post(this.el);
 
@@ -1172,13 +1176,13 @@ PhotoManager.prototype = {
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
 		setTimeout((function(){
 			this.isDisplay = true; 
-			this.el.classList.add("photo--display");
-			this.backBtn.classList.add("photo__thumbnail-back--display");
+			this.el.classList.add("v360-photo--display");
+			this.backBtn.classList.add("v360-photo__thumbnail-back--display");
 			this.render();
 			this.post.display = true
 			setTimeout((function(){
 				this.mapManager.currentMap.currentMarker.unzoom();
-				this.mapManager.container.classList.add("visite__archive--hide");
+				this.mapManager.container.classList.add("v360-visite__archive--hide");
 			}).bind(this), 1000)
 
 		}).bind(this), 1000)
@@ -1192,10 +1196,10 @@ PhotoManager.prototype = {
 	hide: function(){
 		this.isDisplay = false;
 		this.post.display = false
-		this.backBtn.classList.remove("photo__thumbnail-back--display");
+		this.backBtn.classList.remove("v360-photo__thumbnail-back--display");
 		setTimeout((function(){
-			this.el.classList.remove("photo--display"); 
-			this.mapManager.container.classList.remove("visite__archive--hide");
+			this.el.classList.remove("v360-photo--display"); 
+			this.mapManager.container.classList.remove("v360-visite__archive--hide");
 		}).bind(this), 600)
 	},
 
@@ -1218,12 +1222,12 @@ PhotoManager.prototype = {
 
 	onPhotoLoad: function(texture) {
 		this.material.map = texture;
-		this.el.classList.remove("photo--loading");		
+		this.el.classList.remove("v360-photo--loading");		
 		this.display();
 	},
 
 	load: function(marker){
-		this.el.classList.add("photo--loading");
+		this.el.classList.add("v360-photo--loading");
 		this.setBackButton(marker);
 		var self = this;
 		var loader = new THREE.TextureLoader(); 
@@ -1356,7 +1360,7 @@ function MapItem(el, manager) {
 	this._width = this.el.offsetWidth;
 	this._height = this.el.offsetHeight;
 
-	var markers = this.el.querySelectorAll(".marker");
+	var markers = this.el.querySelectorAll(".v360-marker");
 
 	for(var i=0; i<markers.length; i++){
 		this.markers.push(new Marker(markers[i], this));
@@ -1381,9 +1385,9 @@ MapItem.prototype = {
 
 	set fade(isFade) {
 		if( isFade ){
-			this.el.classList.add("map--fade");
+			this.el.classList.add("v360-map--fade");
 		} else {
-			this.el.classList.remove("map--fade");
+			this.el.classList.remove("v360-map--fade");
 		}
 	},
 
@@ -1415,7 +1419,6 @@ MapItem.prototype = {
 	initEvent: function(marker){
 		var self = this;
 		marker.el.addEventListener("click",function(event){
-			console.log("Click marker")
 			event.preventDefault();
 			self.isOpenningPhoto = true; 
 			self.openPhoto(marker);
@@ -1442,7 +1445,7 @@ MapItem.prototype = {
 		if( this.manager ) {
 			this.manager.markerUtil.position = {x: position.x, y: position.y };
 			this.manager.markerUtil.display();
-			this.manager.markerUtil.el.classList.remove("marker--no-transition");
+			this.manager.markerUtil.el.classList.remove("v360-marker--no-transition");
 			this.manager.photoManager.load(marker);
 		}
 		
@@ -1474,7 +1477,7 @@ MapItem.prototype = {
 			setTimeout(function(){
 				if( self.manager ){
 					self.manager.markerUtil.hide();
-					self.manager.markerUtil.el.classList.add("marker--no-transition");
+					self.manager.markerUtil.el.classList.add("v360-marker--no-transition");
 				}
 			}, 1100)
 		}
@@ -1485,18 +1488,18 @@ MapItem.prototype = {
 	 */
 
 	toTop: function() {
-		this.el.classList.remove("map--bottom")
-		this.el.classList.remove("map--select")
-		this.el.classList.add("map--top")
+		this.el.classList.remove("v360-map--bottom")
+		this.el.classList.remove("v360-map--select")
+		this.el.classList.add("v360-map--top")
 		this.hideMarkers();
 		this.cleanPosition();
 		this.mode = TOP
 	},
 
 	toBottom: function() {
-		this.el.classList.remove("map--top")
-		this.el.classList.remove("map--select")
-		this.el.classList.add("map--bottom")
+		this.el.classList.remove("v360-map--top")
+		this.el.classList.remove("v360-map--select")
+		this.el.classList.add("v360-map--bottom")
 		this.hideMarkers();
 		this.cleanPosition();
 		this.mode = BOTTOM
@@ -1511,9 +1514,9 @@ MapItem.prototype = {
 			this.hideMarkers();
 		}
 
-		this.el.classList.remove("map--top")
-		this.el.classList.remove("map--bottom")
-		this.el.classList.remove("map--select")
+		this.el.classList.remove("v360-map--top")
+		this.el.classList.remove("v360-map--bottom")
+		this.el.classList.remove("v360-map--select")
 		this.mode = REGULAR
 	},
 
@@ -1524,7 +1527,7 @@ MapItem.prototype = {
 		if( this.mode != SELECT ){
 		
 			// Clean all behaviours (map--top, map--bottom) & select
-			this.el.className = "map map--select"
+			this.el.className = "v360-map v360-map--select"
 			
 			// Remove transformation
 			this.cleanPosition();
@@ -1604,8 +1607,8 @@ MapItem.prototype = {
 
 function NavMap (manager) {
 
-	this.el = manager.el.querySelector(".nav");
-	this.items = manager.el.querySelectorAll(".nav__item");
+	this.el = manager.el.querySelector(".v360-nav");
+	this.items = manager.el.querySelectorAll(".v360-nav__item");
 	for(var i=0; i<this.items.length; i++){
 		this.initEvent(this.items[i]);
 	}
@@ -1619,13 +1622,13 @@ NavMap.prototype = {
 
 	initPointer: function() {
 		this.pointer = document.createElement("div");
-		this.pointer.classList.add("nav__pointer");
+		this.pointer.classList.add("v360-nav__pointer");
 		this.el.appendChild(this.pointer);
 	},
 
 	movePointerTo: function(rank) {
 		this.pointer.style.top = this.items[0].offsetTop + 50 + 170*rank + "px";
-		this.pointer.classList.add("nav__pointer--active")
+		this.pointer.classList.add("v360-nav__pointer--active")
 	},
 
 	initEvent: function(item){
@@ -1640,31 +1643,31 @@ NavMap.prototype = {
 	},
 
 	responsive: function(){
-		this.el.classList.add("nav--responsive");
+		this.el.classList.add("v360-nav--responsive");
 	},
 
 	desktop: function(){
-		this.el.classList.remove("nav--responsive");
+		this.el.classList.remove("v360-nav--responsive");
 	},
 	
 	selectFromMap: function(map){
 		this.unSelectAll();
 		for(var i=0; i<this.items.length; i++){
 			if( this.items[i].getAttribute("data-map") == map.id ){
-				this.items[i].classList.add("nav__item--active");
+				this.items[i].classList.add("v360-nav__item--active");
 				this.movePointerTo(i);
 			} else {
-				this.items[i].classList.add("nav__item--disable");
+				this.items[i].classList.add("v360-nav__item--disable");
 			}
 		} 
 	},
 
 	unSelectAll: function(){
 		for(var i=0; i<this.items.length; i++){
-			this.items[i].classList.remove("nav__item--active");
-			this.items[i].classList.remove("nav__item--disable");
+			this.items[i].classList.remove("v360-nav__item--active");
+			this.items[i].classList.remove("v360-nav__item--disable");
 		} 
-		this.pointer.classList.remove("nav__pointer--active")
+		this.pointer.classList.remove("v360-nav__pointer--active")
 	}
 }
 /**
@@ -1676,8 +1679,8 @@ function MapManager(el) {
 	this.maps = [];
 	this.createMarkerUtil();
 	this.photoManager = new PhotoManager(this);
-	this.container = this.el.querySelector(".visite__archive");
-	this.closeMapButton = this.el.querySelector("#close-map-button");
+	this.container = this.el.querySelector(".v360-visite__archive");
+	this.closeMapButton = this.el.querySelector("#v360-close-map-button");
 	this.nav = new NavMap(this);
 	this.isResponsive = false; 
 
@@ -1720,9 +1723,9 @@ MapManager.prototype = {
 	 */
 	createMarkerUtil: function() {
 		var element = document.createElement("div");
-		element.id = "visite-marker-transition-util"; 
-		element.className = "marker marker--overall marker--no-transition";
-		element.innerHTML = "<div class='marker__point'></div>"
+		element.id = "v360-visite-marker-transition-util"; 
+		element.className = "v360-marker v360-marker--overall v360-marker--no-transition";
+		element.innerHTML = "<div class='v360-marker__point'></div>"
 		document.body.appendChild(element);
 		this.markerUtil = new Marker(element, null);
 	},
@@ -1755,7 +1758,7 @@ MapManager.prototype = {
 		}
 		this.currentMap = null;
 		this.mode = "regular";
-		this.closeMapButton.classList.remove("map__close--display");
+		this.closeMapButton.classList.remove("v360-map__close--display");
 
 		this.nav.unSelectAll();
 
@@ -1806,7 +1809,7 @@ MapManager.prototype = {
 
 		// Update right navigation and display close button
 		this.nav.selectFromMap(this.currentMap);
-		this.closeMapButton.classList.add("map__close--display");
+		this.closeMapButton.classList.add("v360-map__close--display");
 	},
 
 
@@ -1923,7 +1926,7 @@ MapManager.prototype = {
 	 * Initialisation
 	 */
 	init: function(){
-		var maps = this.el.querySelectorAll(".map"); 	
+		var maps = this.el.querySelectorAll(".v360-map"); 	
 		for(var i=0; i<maps.length; i++){
 			this.maps.push(new MapItem(maps[i], this));
 		}
@@ -1935,6 +1938,5 @@ MapManager.prototype = {
 }
 
 window.addEventListener("load", function(){
-	console.log(document.querySelector(".photo"));
-	var managerMap = new MapManager(document.querySelector(".visite"));
+	var managerMap = new MapManager(document.querySelector(".v360-visite"));
 })

@@ -1,4 +1,3 @@
 window.addEventListener("load", function(){
-	console.log(document.querySelector(".photo"));
-	var managerMap = new MapManager(document.querySelector(".visite"));
+	var managerMap = new MapManager(document.querySelector(".v360-visite"));
 })

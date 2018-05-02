@@ -1,19 +1,19 @@
-.marker {
+.v360-marker {
   display: block;
   position: absolute;
   opacity: 0;
   pointer-events: none; }
-  .marker--display {
+  .v360-marker--display {
     pointer-events: all;
     opacity: 1; }
-    .marker--display .marker__point {
+    .v360-marker--display .v360-marker__point {
       transform: translateZ(20px) translateX(-50%) translateY(-50%) scale(1); }
-      .marker--display .marker__point:hover {
+      .v360-marker--display .v360-marker__point:hover {
         transform: translateZ(20px) translateX(-50%) translateY(-50%) scale(1.3); }
-    .marker--display .marker__title {
+    .v360-marker--display .v360-marker__title {
       opacity: 1;
       transform: translateY(0); }
-  .marker__point {
+  .v360-marker__point {
     transform: translateZ(20px) translateX(-50%) translateY(-50%) scale(0);
     border-radius: 100%;
     transform-style: preserve-3d;
@@ -26,7 +26,7 @@
     cursor: zoom-in;
     width: 15px;
     height: 15px; }
-    .marker__point::after {
+    .v360-marker__point::after {
       content: "";
       display: block;
       position: absolute;
@@ -38,9 +38,9 @@
       height: 25px;
       border-radius: 100%;
       transition: .3s; }
-    .marker__point--no-transition {
+    .v360-marker__point--no-transition {
       transition: none !important; }
-    .marker__point--zoom {
+    .v360-marker__point--zoom {
       animation: none !important;
       width: 200vw !important;
       height: 200vw !important;
@@ -48,12 +48,12 @@
       left: 50% !important;
       background-color: #000 !important;
       transform: scale(1) translateX(-51%) translateY(-51%) !important; }
-      .marker__point--zoom::after {
+      .v360-marker__point--zoom::after {
         display: none; }
-  .marker--overall {
+  .v360-marker--overall {
     z-index: 2;
     position: fixed; }
-  .marker__title {
+  .v360-marker__title {
     color: #ffed00;
     position: absolute;
     bottom: 30px;
@@ -64,7 +64,7 @@
     transform: translateY(-20px);
     opacity: 0;
     transition: .4s ease-in; }
-  .marker__bubble {
+  .v360-marker__bubble {
     width: 150px;
     height: 140px;
     position: absolute;
@@ -77,49 +77,49 @@
     opacity: 0;
     transition: .3s ease-in-out;
     pointer-events: none; }
-    .marker__bubble--visible {
+    .v360-marker__bubble--visible {
       display: block;
       opacity: 1;
       transform: translateY(0); }
-    .marker__bubble--hidden {
+    .v360-marker__bubble--hidden {
       display: block;
       opacity: 0;
       transform: translateY(20px); }
-    .marker__bubble--bottom {
+    .v360-marker__bubble--bottom {
       top: auto;
       bottom: 10px; }
-      .marker__bubble--bottom.marker__bubble--hidden {
+      .v360-marker__bubble--bottom.marker__bubble--hidden {
         transform: translateY(-20px); }
-    .marker__bubble-title {
+    .v360-marker__bubble-title {
       padding: 10px;
       height: 25px;
       box-sizing: content-box;
       text-align: center;
       background-color: #ffed00;
       color: black; }
-    .marker__bubble-img {
+    .v360-marker__bubble-img {
       width: 100%;
       height: calc(100% - 35px);
       background-size: cover;
       background-repeat: no-repeat;
       background-position: center; }
 
-.photo__thumbnail-back .marker__point {
+.v360-photo__thumbnail-back .v360-marker__point {
   width: 10px;
   height: 10px; }
-  .photo__thumbnail-back .marker__point::after {
+  .v360-photo__thumbnail-back .v360-marker__point::after {
     width: 20px;
     height: 20px; }
 
-.photo__thumbnail-back .marker__title {
+.v360-photo__thumbnail-back .v360-marker__title {
   transform: translateY(0);
   pointer-events: none;
   opacity: 0; }
 
-.photo__thumbnail-back .marker:hover .marker__title {
+.v360-photo__thumbnail-back .v360-marker:hover .v360-marker__title {
   opacity: 1; }
 
-.photo__thumbnail-back .marker__bubble {
+.v360-photo__thumbnail-back .v360-marker__bubble {
   display: none; }
 
 @keyframes bounce {
@@ -133,7 +133,7 @@
     width: 15px;
     height: 15px; } }
 
-.map {
+.v360-map {
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
@@ -145,15 +145,15 @@
   left: 0;
   cursor: crosshair;
   transform: translateX(-50%) translateY(-50%) rotateX(80deg) rotateZ(10deg) translateZ(0px) scale(1); }
-  .map--top {
+  .v360-map--top {
     transform: translateX(-50%) translateY(-50%) rotateX(80deg) rotateZ(10deg) translateZ(1000px) scale(1); }
-  .map--bottom {
+  .v360-map--bottom {
     transform: translateX(-50%) translateY(-50%) rotateX(80deg) rotateZ(10deg) translateZ(-1000px) scale(1); }
-  .map--select {
+  .v360-map--select {
     transform: translateX(-50%) translateY(-50%) rotateX(0deg) rotateZ(0deg) translateZ(0) scale(1); }
-  .map--fade {
+  .v360-map--fade {
     opacity: 0.4; }
-  .map__close {
+  .v360-map__close {
     position: absolute;
     top: 0;
     right: 0;
@@ -171,16 +171,16 @@
     background-position: center;
     z-index: 999;
     filter: invert(100%); }
-    .map__close--display {
+    .v360-map__close--display {
       opacity: 1;
       pointer-events: all;
       transform: translateY(0); }
-    .map__close:hover svg {
+    .v360-map__close:hover svg {
       fill: black; }
-    .map__close i {
+    .v360-map__close i {
       font-size: 30px;
       color: black; }
-  .map__container {
+  .v360-map__container {
     perpsective: 1000px;
     position: absolute;
     top: 50%;
@@ -188,7 +188,7 @@
     width: 0;
     height: 0; }
 
-.photo__thumbnail-back .map--select {
+.v360-photo__thumbnail-back .v360-map--select {
   transform: translateX(0) translateY(0);
   height: calc(100% - 20px);
   width: calc(100% - 20px);
@@ -196,11 +196,11 @@
   left: 10px; }
 
 @media screen and (max-width: 650px) {
-  .map {
+  .v360-map {
     width: 300px;
     height: 300px; } }
 
-.nav {
+.v360-nav {
   top: 0;
   right: 0;
   height: 100%;
@@ -211,7 +211,7 @@
   flex-direction: column;
   justify-content: center;
   z-index: 2; }
-  .nav--responsive {
+  .v360-nav--responsive {
     width: 100%;
     height: 60px;
     bottom: 0;
@@ -219,15 +219,15 @@
     right: auto;
     left: 0;
     flex-direction: row; }
-    .nav--responsive .nav__item {
+    .v360-nav--responsive .v360-nav__item {
       padding: 0 20px; }
-      .nav--responsive .nav__item::after {
+      .v360-nav--responsive .v360-nav__item::after {
         display: none !important; }
-      .nav--responsive .nav__item::before {
+      .v360-nav--responsive .v360-nav__item::before {
         display: none !important; }
-    .nav--responsive .nav__pointer {
+    .v360-nav--responsive .v360-nav__pointer {
       display: none; }
-  .nav__pointer {
+  .v360-nav__pointer {
     width: 16px;
     height: 16px;
     position: absolute;
@@ -235,11 +235,11 @@
     border-radius: 100%;
     transform: translateX(-8px) translateY(-8px) scale(0);
     opacity: 0; }
-    .nav__pointer--active {
+    .v360-nav__pointer--active {
       transition: .4s;
       transform: translateX(-8px) translateY(-8px) scale(1);
       opacity: 1; }
-  .nav__item {
+  .v360-nav__item {
     font-weight: normal;
     text-align: left;
     padding: 20px 0 20px 20px;
@@ -252,7 +252,7 @@
     letter-spacing: 0;
     height: 60px;
     box-sizing: content-box; }
-    .nav__item::before {
+    .v360-nav__item::before {
       content: "";
       display: block;
       position: absolute;
@@ -265,9 +265,9 @@
       border-radius: 100%;
       transition: .4s;
       opacity: 0.7; }
-    .nav__item:not(.nav__item--last) {
+    .v360-nav__item:not(.v360-nav__item--last) {
       margin-bottom: 70px; }
-      .nav__item:not(.nav__item--last)::after {
+      .v360-nav__item:not(.v360-nav__item--last)::after {
         content: "";
         display: block;
         width: 1px;
@@ -276,22 +276,22 @@
         position: absolute;
         left: 0;
         top: 50px; }
-    .nav__item--disable {
+    .v360-nav__item--disable {
       color: #DDD; }
-    .nav__item--active {
+    .v360-nav__item--active {
       color: #ffed00; }
-      .nav__item--active::before {
+      .v360-nav__item--active::before {
         opacity: 1;
         transform: translateX(-5px) translateY(-5px) scale(1.3); }
 
-.photo {
+.v360-photo {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100vh;
   z-index: -1; }
-  .photo__thumbnail-back {
+  .v360-photo__thumbnail-back {
     position: absolute;
     top: 0;
     left: 0;
@@ -306,27 +306,27 @@
     z-index: 5;
     background-color: black;
     cursor: zoom-out; }
-    .photo__thumbnail-back-container {
+    .v360-photo__thumbnail-back-container {
       height: 90%;
       width: 90%;
       position: relative;
       top: 5%;
       left: 5%; }
-    .photo__thumbnail-back-img {
+    .v360-photo__thumbnail-back-img {
       max-width: 100%;
       max-height: 100%;
       display: block;
       margin: auto; }
-    .photo__thumbnail-back--zoom, .photo__thumbnail-back:hover {
+    .v360-photo__thumbnail-back--zoom, .v360-photo__thumbnail-back:hover {
       width: 300px;
       height: 300px; }
-    .photo__thumbnail-back--display {
+    .v360-photo__thumbnail-back--display {
       transform: translateY(0); }
-  .photo__canvas {
+  .v360-photo__canvas {
     opacity: 0;
     transition: 1s;
     cursor: move; }
-  .photo__sidebar {
+  .v360-photo__sidebar {
     position: fixed;
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.7);
@@ -341,9 +341,9 @@
     max-width: 400px;
     color: white;
     z-index: 999; }
-    .photo__sidebar--display {
+    .v360-photo__sidebar--display {
       transform: translateX(0); }
-    .photo__sidebar-close {
+    .v360-photo__sidebar-close {
       position: absolute;
       top: 10px;
       left: 10px;
@@ -359,46 +359,46 @@
       background-repeat: no-repeat;
       background-position: center;
       filter: invert(100%); }
-      .photo__sidebar-close--reverse {
+      .v360-photo__sidebar-close--reverse {
         left: -60px;
         transform: rotate(180deg); }
-      .photo__sidebar-close i {
+      .v360-photo__sidebar-close i {
         font-size: 40px; }
-    .photo__sidebar-title {
+    .v360-photo__sidebar-title {
       margin: 60px 0 20px 0;
       letter-spacing: 0;
       font-weight: bold;
       color: #ffed00;
       text-align: left;
       font-size: 1.7em; }
-    .photo__sidebar-content {
+    .v360-photo__sidebar-content {
       font-weight: 100;
       line-height: 1.5;
       letter-spacing: 0px; }
-  .photo--loading {
+  .v360-photo--loading {
     z-index: 1001;
     opacity: 1; }
-  .photo--display {
+  .v360-photo--display {
     z-index: 1001; }
-    .photo--display .photo__canvas {
+    .v360-photo--display .v360-photo__canvas {
       opacity: 1; }
 
-.visite {
+.v360-visite {
   font-family: inherit; }
-  .visite__title {
+  .v360-visite__title {
     position: fixed;
     top: 30px;
     left: 30px; }
-  .visite__util {
+  .v360-visite__util {
     width: 100%;
     height: 100%;
     position: relative; }
-  .visite__archive {
+  .v360-visite__archive {
     opacity: 1;
     transition: opacity 1s;
     overflow: hidden;
     position: relative;
     z-index: 1;
     min-height: 450px; }
-    .visite__archive--hide {
+    .v360-visite__archive--hide {
       opacity: 0; }

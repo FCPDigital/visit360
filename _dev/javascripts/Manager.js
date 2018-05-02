@@ -7,8 +7,8 @@ function MapManager(el) {
 	this.maps = [];
 	this.createMarkerUtil();
 	this.photoManager = new PhotoManager(this);
-	this.container = this.el.querySelector(".visite__archive");
-	this.closeMapButton = this.el.querySelector("#close-map-button");
+	this.container = this.el.querySelector(".v360-visite__archive");
+	this.closeMapButton = this.el.querySelector("#v360-close-map-button");
 	this.nav = new NavMap(this);
 	this.isResponsive = false; 
 
@@ -51,9 +51,9 @@ MapManager.prototype = {
 	 */
 	createMarkerUtil: function() {
 		var element = document.createElement("div");
-		element.id = "visite-marker-transition-util"; 
-		element.className = "marker marker--overall marker--no-transition";
-		element.innerHTML = "<div class='marker__point'></div>"
+		element.id = "v360-visite-marker-transition-util"; 
+		element.className = "v360-marker v360-marker--overall v360-marker--no-transition";
+		element.innerHTML = "<div class='v360-marker__point'></div>"
 		document.body.appendChild(element);
 		this.markerUtil = new Marker(element, null);
 	},
@@ -86,7 +86,7 @@ MapManager.prototype = {
 		}
 		this.currentMap = null;
 		this.mode = "regular";
-		this.closeMapButton.classList.remove("map__close--display");
+		this.closeMapButton.classList.remove("v360-map__close--display");
 
 		this.nav.unSelectAll();
 
@@ -137,7 +137,7 @@ MapManager.prototype = {
 
 		// Update right navigation and display close button
 		this.nav.selectFromMap(this.currentMap);
-		this.closeMapButton.classList.add("map__close--display");
+		this.closeMapButton.classList.add("v360-map__close--display");
 	},
 
 
@@ -254,7 +254,7 @@ MapManager.prototype = {
 	 * Initialisation
 	 */
 	init: function(){
-		var maps = this.el.querySelectorAll(".map"); 	
+		var maps = this.el.querySelectorAll(".v360-map"); 	
 		for(var i=0; i<maps.length; i++){
 			this.maps.push(new MapItem(maps[i], this));
 		}
