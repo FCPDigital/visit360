@@ -17,7 +17,6 @@ function offset(elem) {
 function Marker(el, map, options) {
 	this.el = el;
 	this.point = this.el.querySelector(".marker__point");
-	console.log(this.el, this.point);
 	this.bubble = this.el.querySelector(".marker__bubble");
 	this.map = map;
 	this.options = options ? options : {};
@@ -38,7 +37,7 @@ Marker.prototype = {
 
 	get style(){
 		if( this.map ) {
-			return `top: ${this.position.y*this.map.width}px; left: ${this.position.x*this.map.height}px;`	
+			return `top: ${this.position.y*this.map.width}${this.map.metric}; left: ${this.position.x*this.map.height}${this.map.metric};`	
 		}
 		
 		return `top: ${this.position.y}px; left: ${this.position.x}px;`	

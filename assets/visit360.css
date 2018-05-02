@@ -104,6 +104,24 @@
       background-repeat: no-repeat;
       background-position: center; }
 
+.photo__thumbnail-back .marker__point {
+  width: 10px;
+  height: 10px; }
+  .photo__thumbnail-back .marker__point::after {
+    width: 20px;
+    height: 20px; }
+
+.photo__thumbnail-back .marker__title {
+  transform: translateY(0);
+  pointer-events: none;
+  opacity: 0; }
+
+.photo__thumbnail-back .marker:hover .marker__title {
+  opacity: 1; }
+
+.photo__thumbnail-back .marker__bubble {
+  display: none; }
+
 @keyframes bounce {
   0% {
     width: 15px;
@@ -169,6 +187,13 @@
     left: 50%;
     width: 0;
     height: 0; }
+
+.photo__thumbnail-back .map--select {
+  transform: translateX(0) translateY(0);
+  height: calc(100% - 20px);
+  width: calc(100% - 20px);
+  top: 10px;
+  left: 10px; }
 
 @media screen and (max-width: 650px) {
   .map {
@@ -276,7 +301,7 @@
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    transform: translateY(-100px);
+    transform: translateY(-100%);
     transition: .5s;
     z-index: 5;
     background-color: black;

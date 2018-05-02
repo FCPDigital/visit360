@@ -1,4 +1,4 @@
-.photo
+.#{$prefix}photo
 	
 	position: fixed
 	top: 0
@@ -17,7 +17,7 @@
 		background-size: contain
 		background-repeat: no-repeat
 		background-position: center
-		transform: translateY(-100px)
+		transform: translateY(-100%)
 		transition: .5s
 		z-index: 5
 		background-color: black
@@ -111,8 +111,7 @@
 
 	&--display
 		z-index: 1001
-
 		
-		.photo__canvas
+		.#{$prefix}photo__canvas
 			opacity: 1
 

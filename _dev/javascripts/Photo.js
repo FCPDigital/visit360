@@ -112,9 +112,19 @@ PhotoManager.prototype = {
 	},
 
 	setBackButton: function(marker) {
-		var img = this.backBtn.querySelector(".photo__thumbnail-back-img");
-		img.src = marker.map.imageUrl;
-		var markerContainer = this.backBtn.querySelector(".marker__container");
+		var self = this
+		this.map = marker.map.clone();
+		this.map.metric = "%";
+		this.map.refreshMarkerPositions();
+		this.map.onClick = function(){
+			if( self.mapManager.currentMap ){
+				self.mapManager.currentMap.closePhoto();
+			}
+		}
+
+		this.backBtn.innerHTML = "";
+		this.backBtn.appendChild(this.map.el);
+		
 		var proto = ``
 	},
 
@@ -133,7 +143,6 @@ PhotoManager.prototype = {
 	},
 
 	render: function(){
-		// console.log(this)
 		if( this.isDisplay ){
 			requestAnimationFrame(this.render.bind(this));// enregistre la fonction pour un appel récurrent 
 		}
@@ -215,19 +224,15 @@ PhotoManager.prototype = {
 	},
 
 	onDocumentResize: function(){
+		this.camera.aspect = window.innerWidth / window.innerHeight;
+		this.camera.updateProjectionMatrix();
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
 	},
 
 	initEvents: function(){
 		var self = this;
 
-		this.backBtn.addEventListener("click", (function(){
-			if( this.mapManager.currentMap ){
-				this.mapManager.currentMap.closePhoto();
-			}
-		}).bind(this))
-
-		document.addEventListener("resize", this.onDocumentResize.bind(this), false);
+		window.addEventListener("resize", this.onDocumentResize.bind(this), false);
 		document.addEventListener("mousedown", this.onDocumentMouseDown.bind(this), false);
 		document.addEventListener("mousemove", this.onDocumentMouseMove.bind(this), false);
 		document.addEventListener("mouseup", this.onDocumentMouseUp.bind(this), false);

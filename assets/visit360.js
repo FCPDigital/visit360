@@ -940,7 +940,6 @@ function offset(elem) {
 function Marker(el, map, options) {
 	this.el = el;
 	this.point = this.el.querySelector(".marker__point");
-	console.log(this.el, this.point);
 	this.bubble = this.el.querySelector(".marker__bubble");
 	this.map = map;
 	this.options = options ? options : {};
@@ -961,7 +960,7 @@ Marker.prototype = {
 
 	get style(){
 		if( this.map ) {
-			return `top: ${this.position.y*this.map.width}px; left: ${this.position.x*this.map.height}px;`	
+			return `top: ${this.position.y*this.map.width}${this.map.metric}; left: ${this.position.x*this.map.height}${this.map.metric};`	
 		}
 		
 		return `top: ${this.position.y}px; left: ${this.position.x}px;`	
@@ -1201,9 +1200,19 @@ PhotoManager.prototype = {
 	},
 
 	setBackButton: function(marker) {
-		var img = this.backBtn.querySelector(".photo__thumbnail-back-img");
-		img.src = marker.map.imageUrl;
-		var markerContainer = this.backBtn.querySelector(".marker__container");
+		var self = this
+		this.map = marker.map.clone();
+		this.map.metric = "%";
+		this.map.refreshMarkerPositions();
+		this.map.onClick = function(){
+			if( self.mapManager.currentMap ){
+				self.mapManager.currentMap.closePhoto();
+			}
+		}
+
+		this.backBtn.innerHTML = "";
+		this.backBtn.appendChild(this.map.el);
+		
 		var proto = ``
 	},
 
@@ -1222,7 +1231,6 @@ PhotoManager.prototype = {
 	},
 
 	render: function(){
-		// console.log(this)
 		if( this.isDisplay ){
 			requestAnimationFrame(this.render.bind(this));// enregistre la fonction pour un appel récurrent 
 		}
@@ -1304,19 +1312,15 @@ PhotoManager.prototype = {
 	},
 
 	onDocumentResize: function(){
+		this.camera.aspect = window.innerWidth / window.innerHeight;
+		this.camera.updateProjectionMatrix();
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
 	},
 
 	initEvents: function(){
 		var self = this;
 
-		this.backBtn.addEventListener("click", (function(){
-			if( this.mapManager.currentMap ){
-				this.mapManager.currentMap.closePhoto();
-			}
-		}).bind(this))
-
-		document.addEventListener("resize", this.onDocumentResize.bind(this), false);
+		window.addEventListener("resize", this.onDocumentResize.bind(this), false);
 		document.addEventListener("mousedown", this.onDocumentMouseDown.bind(this), false);
 		document.addEventListener("mousemove", this.onDocumentMouseMove.bind(this), false);
 		document.addEventListener("mouseup", this.onDocumentMouseUp.bind(this), false);
@@ -1341,12 +1345,14 @@ const REGULAR= 2
  */
 function MapItem(el, manager) {
 	this.el = el;
+	this.metric = "px";
 	this.id = this.el.getAttribute("id");
-	this.manager = manager;
+	this.manager = manager ? manager : null;
 	this.markers = [];
+	this.isOpenningPhoto = false;
 	this.mode = REGULAR
 	this.imageUrl = this.el.getAttribute("data-url");
-
+	this.onClick = null;
 	this._width = this.el.offsetWidth;
 	this._height = this.el.offsetHeight;
 
@@ -1382,8 +1388,12 @@ MapItem.prototype = {
 	},
 
 	clone: function(map, options) {
-		var parsedEl = document.createElement("fragment").innerHTML = this.el.innerHTML;
-		return new Map(parsedEl.firstChild, this.manager)
+		var parsedEl = document.createElement("fragment");
+		parsedEl.innerHTML = this.el.outerHTML;
+		var mapCloned = parsedEl.firstChild; 
+		mapCloned.id = mapCloned.id +"-miniature";
+
+		return new MapItem(mapCloned, this.manager)
 	},
 
 	/**
@@ -1391,15 +1401,25 @@ MapItem.prototype = {
 	 */
 
 	initEvents: function(){
+		var self = this;
 		for(var i=0; i<this.markers.length; i++){
 			this.initEvent(this.markers[i]);
 		}
+		this.el.addEventListener("click", function(){
+			if( self.onClick && !self.isOpenningPhoto ){
+				self.onClick.call(this)
+			}
+		})
 	},
 
 	initEvent: function(marker){
 		var self = this;
-		marker.el.addEventListener("click",function(){
+		marker.el.addEventListener("click",function(event){
+			console.log("Click marker")
+			event.preventDefault();
+			self.isOpenningPhoto = true; 
 			self.openPhoto(marker);
+			event.stopPropagation();
 		}, false)
 	},
 	
@@ -1419,17 +1439,22 @@ MapItem.prototype = {
 		var position = marker.el.getBoundingClientRect();
 
 		// Prepare zoom animation 
-		this.manager.markerUtil.position = {x: position.x, y: position.y };
-		this.manager.markerUtil.display();
-		this.manager.markerUtil.el.classList.remove("marker--no-transition");
+		if( this.manager ) {
+			this.manager.markerUtil.position = {x: position.x, y: position.y };
+			this.manager.markerUtil.display();
+			this.manager.markerUtil.el.classList.remove("marker--no-transition");
+			this.manager.photoManager.load(marker);
+		}
 		
 		// Update & load current marker
 		this.currentMarker = marker;
-		this.manager.photoManager.load(marker);
 		
 		// Launch zoom animation
 		setTimeout(function(){
-			self.manager.markerUtil.zoom();
+			if( self.manager ){
+				self.manager.markerUtil.zoom();
+			}
+			self.isOpenningPhoto = false; 
 		}, 40)
 	},
 
@@ -1438,14 +1463,19 @@ MapItem.prototype = {
 		if( this.currentMarker ){
 
 			// Launch leave animation
-			this.manager.markerUtil.unzoom();
-			this.manager.photoManager.hide();
+			if( this.manager ){
+				this.manager.markerUtil.unzoom();
+				this.manager.photoManager.hide();
+			}
+			
 			this.currentMarker = null;
 			
 			// Reset views 
 			setTimeout(function(){
-				self.manager.markerUtil.hide();
-				self.manager.markerUtil.el.classList.add("marker--no-transition");
+				if( self.manager ){
+					self.manager.markerUtil.hide();
+					self.manager.markerUtil.el.classList.add("marker--no-transition");
+				}
 			}, 1100)
 		}
 	},
@@ -1510,8 +1540,13 @@ MapItem.prototype = {
 	 */
 
 	refreshBoundaries: function(){
-		this._width = this.el.offsetWidth;
-		this._height = this.el.offsetHeight;
+		if( this.metric == "%") {
+			this._width = 100;
+			this._height = 100;
+		} else {
+			this._width = this.el.offsetWidth;
+			this._height = this.el.offsetHeight;
+		}
 	},
 
 	refreshMarkerPositions: function(){

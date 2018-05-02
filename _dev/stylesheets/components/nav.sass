@@ -1,6 +1,6 @@
 $nav-point-size: 10px
     
-.nav
+.#{$prefix}nav
     top: 0
     right: 0
     height: 100%
@@ -20,14 +20,14 @@ $nav-point-size: 10px
         right: auto
         left: 0
         flex-direction: row
-        .nav__item
+        .#{$prefix}nav__item
             padding: 0 $nav-item-padding 
             &::after
                 display: none !important
             &::before
                 display: none !important
 
-        .nav__pointer
+        .#{$prefix}nav__pointer
             display: none
 
 

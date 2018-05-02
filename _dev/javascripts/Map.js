@@ -12,12 +12,14 @@ const REGULAR= 2
  */
 function MapItem(el, manager) {
 	this.el = el;
+	this.metric = "px";
 	this.id = this.el.getAttribute("id");
-	this.manager = manager;
+	this.manager = manager ? manager : null;
 	this.markers = [];
+	this.isOpenningPhoto = false;
 	this.mode = REGULAR
 	this.imageUrl = this.el.getAttribute("data-url");
-
+	this.onClick = null;
 	this._width = this.el.offsetWidth;
 	this._height = this.el.offsetHeight;
 
@@ -53,8 +55,12 @@ MapItem.prototype = {
 	},
 
 	clone: function(map, options) {
-		var parsedEl = document.createElement("fragment").innerHTML = this.el.innerHTML;
-		return new Map(parsedEl.firstChild, this.manager)
+		var parsedEl = document.createElement("fragment");
+		parsedEl.innerHTML = this.el.outerHTML;
+		var mapCloned = parsedEl.firstChild; 
+		mapCloned.id = mapCloned.id +"-miniature";
+
+		return new MapItem(mapCloned, this.manager)
 	},
 
 	/**
@@ -62,15 +68,25 @@ MapItem.prototype = {
 	 */
 
 	initEvents: function(){
+		var self = this;
 		for(var i=0; i<this.markers.length; i++){
 			this.initEvent(this.markers[i]);
 		}
+		this.el.addEventListener("click", function(){
+			if( self.onClick && !self.isOpenningPhoto ){
+				self.onClick.call(this)
+			}
+		})
 	},
 
 	initEvent: function(marker){
 		var self = this;
-		marker.el.addEventListener("click",function(){
+		marker.el.addEventListener("click",function(event){
+			console.log("Click marker")
+			event.preventDefault();
+			self.isOpenningPhoto = true; 
 			self.openPhoto(marker);
+			event.stopPropagation();
 		}, false)
 	},
 	
@@ -90,17 +106,22 @@ MapItem.prototype = {
 		var position = marker.el.getBoundingClientRect();
 
 		// Prepare zoom animation 
-		this.manager.markerUtil.position = {x: position.x, y: position.y };
-		this.manager.markerUtil.display();
-		this.manager.markerUtil.el.classList.remove("marker--no-transition");
+		if( this.manager ) {
+			this.manager.markerUtil.position = {x: position.x, y: position.y };
+			this.manager.markerUtil.display();
+			this.manager.markerUtil.el.classList.remove("marker--no-transition");
+			this.manager.photoManager.load(marker);
+		}
 		
 		// Update & load current marker
 		this.currentMarker = marker;
-		this.manager.photoManager.load(marker);
 		
 		// Launch zoom animation
 		setTimeout(function(){
-			self.manager.markerUtil.zoom();
+			if( self.manager ){
+				self.manager.markerUtil.zoom();
+			}
+			self.isOpenningPhoto = false; 
 		}, 40)
 	},
 
@@ -109,14 +130,19 @@ MapItem.prototype = {
 		if( this.currentMarker ){
 
 			// Launch leave animation
-			this.manager.markerUtil.unzoom();
-			this.manager.photoManager.hide();
+			if( this.manager ){
+				this.manager.markerUtil.unzoom();
+				this.manager.photoManager.hide();
+			}
+			
 			this.currentMarker = null;
 			
 			// Reset views 
 			setTimeout(function(){
-				self.manager.markerUtil.hide();
-				self.manager.markerUtil.el.classList.add("marker--no-transition");
+				if( self.manager ){
+					self.manager.markerUtil.hide();
+					self.manager.markerUtil.el.classList.add("marker--no-transition");
+				}
 			}, 1100)
 		}
 	},
@@ -181,8 +207,13 @@ MapItem.prototype = {
 	 */
 
 	refreshBoundaries: function(){
-		this._width = this.el.offsetWidth;
-		this._height = this.el.offsetHeight;
+		if( this.metric == "%") {
+			this._width = 100;
+			this._height = 100;
+		} else {
+			this._width = this.el.offsetWidth;
+			this._height = this.el.offsetHeight;
+		}
 	},
 
 	refreshMarkerPositions: function(){
