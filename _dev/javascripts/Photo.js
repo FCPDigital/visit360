@@ -88,7 +88,8 @@ PhotoManager.prototype = {
 			this.el.classList.add("v360-photo--display");
 			this.backBtn.classList.add("v360-photo__thumbnail-back--display");
 			this.render();
-			this.post.display = true
+
+			this.post.display = window.innerWidth < 500 ? false : true;
 			setTimeout((function(){
 				this.mapManager.currentMap.currentMarker.unzoom();
 				this.mapManager.container.classList.add("v360-visite__archive--hide");

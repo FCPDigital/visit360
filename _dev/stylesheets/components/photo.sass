@@ -52,7 +52,7 @@
 	&__sidebar
 		position: fixed
 		height: 100vh
-		background-color: rgba(0, 0, 0, .7)
+		background-color: rgba(0, 0, 0, .85)
 		padding: 30px
 		top: 0
 		right: 0
@@ -78,14 +78,15 @@
 			border: 0
 			cursor: pointer
 			transition: all .4s
-			background-image: url("./img/close.svg")
+			background-image: url("./img/arrow.svg")
 			background-size: 50%
 			background-repeat: no-repeat
 			background-position: center
 			filter: invert(100%)
+			transform: rotate(180deg)
 			&--reverse
 				left: -60px
-				transform: rotate(180deg)
+				transform: rotate(0deg)
 			i 
 				font-size: 40px
 
@@ -93,7 +94,7 @@
 		&-body
 
 		&-title
-			margin: 60px 0 20px 0
+			margin: 40px 0 20px 0
 			letter-spacing: 0
 			font-weight: bold
 			color: $color-primary
@@ -111,7 +112,10 @@
 
 	&--display
 		z-index: 1001
-		
+
 		.#{$prefix}photo__canvas
 			opacity: 1
 
+@media screen and (max-width: 500px)
+	.#{$prefix}photo__sidebar
+		width: 100%

@@ -1,1 +1,0 @@
-single-marker.php
