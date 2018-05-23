@@ -22,7 +22,9 @@
 
         <div id="<?php echo $map->id ?>" 
           class="v360-map" 
-          data-url="<?php echo $map->img; ?>">
+          data-url="">
+          <div class="v360-map__thumbnail" style="background-image: url('<?php echo $map->img; ?>');">
+          </div>
           <div class="v360-marker__container">
             <?php foreach($map->markers as $key => $marker) { ?>
               <?php if( $marker->photo ) { ?>
@@ -40,20 +42,16 @@
         </div>
       <?php } ?>
     </div>
-  
-  
   </div>
 
 
   <!-- Photo Frame -->
   <div class="v360-photo">
     <div class="v360-photo__thumbnail-back">
-      <div class="v360-photo__thumbnail-back-container">
-        <img class="v360-photo__thumbnail-back-img"/>
-          <div class="v360-marker__container">
-            <!--<span class="marker" data-marker=''></span>-->
-          </div>
-      </div>
+      <div class="v360-photo__thumbnail-back-container"></div>
+    </div>
+    <div class="v360-loader">
+      <div id="loader-square"></div>
     </div>
     <canvas id="v360-photo" class="v360-photo__canvas"></canvas>
 

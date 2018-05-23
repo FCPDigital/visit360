@@ -13,235 +13,242 @@
  * @prop {Post} post
  */
 function PhotoManager(mapManager) {
-	this.mapManager = mapManager;
-	this.el = document.querySelector(".v360-photo");
-	this.el = document.querySelector(".v360-photo");
-	this.canvas = document.querySelector("#v360-photo");
-	this.backBtn = document.querySelector(".v360-photo__thumbnail-back");
+  this.mapManager = mapManager;
+  this.el = document.querySelector(".v360-photo");
+  this.el = document.querySelector(".v360-photo");
+  this.canvas = document.querySelector("#v360-photo");
+  this.backBtn = document.querySelector(".v360-photo__thumbnail-back");
 
-	this.post = new Post(this.el);
+  this.post = new Post(this.el);
 
-	this.renderer = new THREE.WebGLRenderer({canvas: this.canvas});
-	this.renderer.setSize(window.innerWidth, window.innerHeight);
+  this.renderer = new THREE.WebGLRenderer({canvas: this.canvas});
+  this.renderer.setSize(window.innerWidth, window.innerHeight);
 
-	this.scene = new THREE.Scene();
+  this.scene = new THREE.Scene();
 
-    // ajoute la caméra
-    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
-    this.camera.lookAt(new THREE.Vector3(0, 0, 0));
-	this.camera.position.z = 5;
-	
-	this.initSphereMesh();
-    this.initParams();
-	this.initEvents();
+  // ajoute la caméra
+  this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
+  this.camera.lookAt(new THREE.Vector3(0, 0, 0));
+  this.camera.position.z = 5;
+  
+  this.initSphereMesh();
+  this.initParams();
+  this.initEvents();
 }
 
 
 PhotoManager.prototype = {
 
 
-	// Set the params of sphere
-	initSphereMesh: function(){
+  // Set the params of sphere
+  initSphereMesh: function(){
 
-		// création d'une sphère goémétrique
-		this.geo = new THREE.SphereGeometry(40, 32, 32);
-		
-	    // this.geo.applyMatrix(new THREE.Matrix4().makeScale(-1, 1, 1));
+    // création d'une sphère goémétrique
+    this.geo = new THREE.SphereGeometry(40, 32, 32);
 
-	    // création d'une sphère matérielle
-	    this.material = new THREE.MeshBasicMaterial({
-	    	side: THREE.BackSide
-	    });
+    // création d'une sphère matérielle
+    this.material = new THREE.MeshBasicMaterial({
+      side: THREE.BackSide
+    });
 
-	 	this.sphereMesh = new THREE.Mesh(this.geo, this.material);
-	    this.sphereMesh.name = "photo";
-		this.sphereMesh.scale.x *= -1
-	    this.scene.add(this.sphereMesh);
-	},
+    this.sphereMesh = new THREE.Mesh(this.geo, this.material);
+    this.sphereMesh.name = "photo";
+    this.sphereMesh.scale.x *= -1;
+    this.scene.add(this.sphereMesh);
+  },
 
-	// Set control params
-	initParams: function() {
-		this.savedX = 0;
-		this.savedY = 0;
-		this.lon = 0;
-		this.lat = 0;
-		this.savedLongitude = 0;
-		this.savedLatitude = 0;
-		this.bManualControl = false;
-	},
+  // Set control params
+  initParams: function() {
+    this.savedX = 0;
+    this.savedY = 0;
+    this.lon = 0;
+    this.lat = 0;
+    this.savedLongitude = 0;
+    this.savedLatitude = 0;
+    this.bManualControl = false;
+  },
 
 
-	/* Affichage
-	Attend 1000ms que la transition du marker se termine puis : 
-	- Met à jour le status
-	- Affiche le layout photo
-	- Render la scène 
-	- Affiche la sidebar
-	- Attend 1000ms de plus :
-		- dézoome le marker
-		- Cache la partie "Map" 
-	*/
-	display: function() {
-		this.renderer.setSize(window.innerWidth, window.innerHeight);
-		setTimeout((function(){
-			this.isDisplay = true; 
-			this.el.classList.add("v360-photo--display");
-			this.backBtn.classList.add("v360-photo__thumbnail-back--display");
-			this.render();
+  /* Affichage
+  Attend 1000ms que la transition du marker se termine puis : 
+  - Met à jour le status
+  - Affiche le layout photo
+  - Render la scène 
+  - Affiche la sidebar
+  - Attend 1000ms de plus :
+    - dézoome le marker
+    - Cache la partie "Map" 
+  */
+  display: function() {
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    setTimeout((function(){
+      this.isDisplay = true; 
+      this.el.classList.add("v360-photo--display");
+      this.backBtn.classList.add("v360-photo__thumbnail-back--display");
+      this.render();
 
-			this.post.display = window.innerWidth < 500 ? false : true;
-			setTimeout((function(){
-				this.mapManager.currentMap.currentMarker.unzoom();
-				this.mapManager.container.classList.add("v360-visite__archive--hide");
-			}).bind(this), 1000)
+      this.post.display = window.innerWidth < 500 ? false : true;
+      this.el.classList.remove("v360-photo--loading");
 
-		}).bind(this), 1000)
-	},
+      setTimeout((function(){
+        this.mapManager.currentMap.currentMarker.unzoom();
+        this.mapManager.container.classList.add("v360-visite__archive--hide");
+      }).bind(this), 1000)
 
-	/* 
-	- Met à jour le status 
-	- Cache la sidebar
-	- Cache le layout photo
-	 */
-	hide: function(){
-		this.isDisplay = false;
-		this.post.display = false
-		this.backBtn.classList.remove("v360-photo__thumbnail-back--display");
-		setTimeout((function(){
-			this.el.classList.remove("v360-photo--display"); 
-			this.mapManager.container.classList.remove("v360-visite__archive--hide");
-		}).bind(this), 600)
-	},
+    }).bind(this), 1000)
+  },
 
-	setBackButton: function(marker) {
-		var self = this
-		this.map = marker.map.clone();
-		this.map.metric = "%";
-		this.map.refreshMarkerPositions();
-		this.map.onClick = function(){
-			if( self.mapManager.currentMap ){
-				self.mapManager.currentMap.closePhoto();
-			}
-		}
+  /* 
+  - Met à jour le status 
+  - Cache la sidebar
+  - Cache le layout photo
+   */
+  hide: function(){
+    this.isDisplay = false;
+    this.post.display = false
+    this.backBtn.classList.remove("v360-photo__thumbnail-back--display");
+    setTimeout((function(){
+      this.el.classList.remove("v360-photo--display"); 
+      this.mapManager.container.classList.remove("v360-visite__archive--hide");
+    }).bind(this), 600)
+  },
 
-		this.backBtn.innerHTML = "";
-		this.backBtn.appendChild(this.map.el);
-		
-		var proto = ``
-	},
+  setBackButton: function(marker) {
+    var self = this
+    this.map = marker.map.clone();
+    this.map.metric = "%";
+    this.map.refreshMarkerPositions();
+    this.map.onClick = function(){
+      if( self.mapManager.currentMap ){
+        self.mapManager.currentMap.closePhoto();
+      }
+    }
+    
+    this.backBtn.addEventListener("click", function(){
+      if( self.mapManager.currentMap ){
+        self.mapManager.currentMap.closePhoto();
+      }
+    })
 
-	onPhotoLoad: function(texture) {
-		this.material.map = texture;
-		this.el.classList.remove("v360-photo--loading");		
-		this.display();
-	},
+    this.backBtn.innerHTML = "";
+    var backMessage = document.createElement("p");
+    backMessage.innerHTML = "Retour";
+    backMessage.className = "v360-photo__thumbnail-back-message"
+    this.backBtn.appendChild(this.map.el);
+    this.backBtn.appendChild(backMessage);
+  },
 
-	load: function(marker){
-		this.el.classList.add("v360-photo--loading");
-		this.setBackButton(marker);
-		var self = this;
-		var loader = new THREE.TextureLoader(); 
-		loader.load( marker.target, this.onPhotoLoad.bind(this) );
-	},
+  onPhotoLoad: function(texture) {
+    this.material.map = texture;
+    this.display();
+  },
 
-	render: function(){
-		if( this.isDisplay ){
-			requestAnimationFrame(this.render.bind(this));// enregistre la fonction pour un appel récurrent 
-		}
+  load: function(marker){
+    this.el.classList.add("v360-photo--loading");
+    this.setBackButton(marker);
+    var self = this;
+    var loader = new THREE.TextureLoader(); 
+    loader.load( marker.target, this.onPhotoLoad.bind(this) );
+  },
 
-		if( this.autoRotate && this.lonSpeed == 0 && !this.bManualControl){
-			this.lon += 0.05;
-		}
+  render: function(){
+    if( this.isDisplay ){
+      requestAnimationFrame(this.render.bind(this));// enregistre la fonction pour un appel récurrent 
+    }
 
-	    if( Math.abs(this.lonSpeed ) > 0.5 && !this.bManualControl){
-	    	this.lonSpeed *= 0.95
-	    } else {
-	    	this.lonSpeed = 0;
-	    }
+    if( this.autoRotate && this.lonSpeed == 0 && !this.bManualControl){
+      this.lon += 0.05;
+    }
 
-	    this.lon += this.lonSpeed;
+      if( Math.abs(this.lonSpeed ) > 0.5 && !this.bManualControl){
+        this.lonSpeed *= 0.95
+      } else {
+        this.lonSpeed = 0;
+      }
 
-	    // limitation de la latitude entre -85 et 85 (impossible de voir le ciel ou vos pieds)
-	    this.lat = Math.max(-85, Math.min(85, this.lat));
+      this.lon += this.lonSpeed;
 
-	    // déplace la caméra en fonction de la latitude (mouvement vertical) et de la longitude (mouvement horizontal)
-	    var vec = new THREE.Vector3(
-	    	500 * Math.sin(THREE.Math.degToRad(90 - this.lat)) * Math.cos(THREE.Math.degToRad(this.lon)),
-	    	500 * Math.cos(THREE.Math.degToRad(90 - this.lat)), 
-	    	500 * Math.sin(THREE.Math.degToRad(90 - this.lat)) * Math.sin(THREE.Math.degToRad(this.lon))
-	    );
+      // limitation de la latitude entre -85 et 85 (impossible de voir le ciel ou vos pieds)
+      this.lat = Math.max(-85, Math.min(85, this.lat));
 
-	    this.camera.lookAt(vec);
+      // déplace la caméra en fonction de la latitude (mouvement vertical) et de la longitude (mouvement horizontal)
+      var vec = new THREE.Vector3(
+        500 * Math.sin(THREE.Math.degToRad(90 - this.lat)) * Math.cos(THREE.Math.degToRad(this.lon)),
+        500 * Math.cos(THREE.Math.degToRad(90 - this.lat)), 
+        500 * Math.sin(THREE.Math.degToRad(90 - this.lat)) * Math.sin(THREE.Math.degToRad(this.lon))
+      );
 
-	    // appel la fonction de rendu
-	    this.renderer.render(this.scene, this.camera);
-	},
+      this.camera.lookAt(vec);
 
-
-	homogeneiseEvent: function(event){
-		return event.touches && event.touches.length ? {
-			x: event.touches[0].clientX,
-			y: event.touches[0].clientY
-		} : {
-			x: event.clientX,
-			y: event.clientY
-		};
-	},
-
-	/**
-	 * Events
-	 */
-
-	onDocumentMouseDown: function(event) {
-	    event.preventDefault();
-	    var coord = this.homogeneiseEvent(event);
+      // appel la fonction de rendu
+      this.renderer.render(this.scene, this.camera);
+  },
 
 
-	    this.autoRotate = false;
+  homogeneiseEvent: function(event){
+    return event.touches && event.touches.length ? {
+      x: event.touches[0].clientX,
+      y: event.touches[0].clientY
+    } : {
+      x: event.clientX,
+      y: event.clientY
+    };
+  },
 
-	    this.bManualControl = true;
+  /**
+   * Events
+   */
 
-	    this.savedX = coord.x;
-	    this.savedY = coord.y;
+  onDocumentMouseDown: function(event) {
+      event.preventDefault();
+      var coord = this.homogeneiseEvent(event);
 
-	    this.savedLongitude = this.lon;
-	    this.savedLatitude = this.lat;
-	},
 
-	onDocumentMouseMove: function(event){
-	    // mise à jour si mode manuel
-	    var coord = this.homogeneiseEvent(event);
-	    if(this.bManualControl)
-	    {
+      this.autoRotate = false;
 
-	    	this.lonSpeed = ((this.savedX - coord.x) / window.innerWidth) * Math.PI * 2 * 4;
-	        this.lon = (this.savedX - coord.x) * 0.1 + this.savedLongitude;
-	        this.lat = (coord.y - this.savedY) * 0.1 + this.savedLatitude;
-	    }
-	},
+      this.bManualControl = true;
 
-	onDocumentMouseUp: function(event) {
-	    this.bManualControl = false;
-	    this.autoRotate = true;
-	},
+      this.savedX = coord.x;
+      this.savedY = coord.y;
 
-	onDocumentResize: function(){
-		this.camera.aspect = window.innerWidth / window.innerHeight;
-		this.camera.updateProjectionMatrix();
-		this.renderer.setSize(window.innerWidth, window.innerHeight);
-	},
+      this.savedLongitude = this.lon;
+      this.savedLatitude = this.lat;
+  },
 
-	initEvents: function(){
-		var self = this;
+  onDocumentMouseMove: function(event){
+      // mise à jour si mode manuel
+      var coord = this.homogeneiseEvent(event);
+      if(this.bManualControl)
+      {
 
-		window.addEventListener("resize", this.onDocumentResize.bind(this), false);
-		document.addEventListener("mousedown", this.onDocumentMouseDown.bind(this), false);
-		document.addEventListener("mousemove", this.onDocumentMouseMove.bind(this), false);
-		document.addEventListener("mouseup", this.onDocumentMouseUp.bind(this), false);
+        this.lonSpeed = ((this.savedX - coord.x) / window.innerWidth) * Math.PI * 2 * 4;
+          this.lon = (this.savedX - coord.x) * 0.1 + this.savedLongitude;
+          this.lat = (coord.y - this.savedY) * 0.1 + this.savedLatitude;
+      }
+  },
 
-		document.addEventListener("touchstart", this.onDocumentMouseDown.bind(this), false);
-		document.addEventListener("touchmove", this.onDocumentMouseMove.bind(this), false);
-		document.addEventListener("touchend", this.onDocumentMouseUp.bind(this), false);
-	}
+  onDocumentMouseUp: function(event) {
+      this.bManualControl = false;
+      this.autoRotate = true;
+  },
+
+  onDocumentResize: function(){
+    this.camera.aspect = window.innerWidth / window.innerHeight;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+  },
+
+  initEvents: function(){
+    var self = this;
+
+    window.addEventListener("resize", this.onDocumentResize.bind(this), false);
+    document.addEventListener("mousedown", this.onDocumentMouseDown.bind(this), false);
+    document.addEventListener("mousemove", this.onDocumentMouseMove.bind(this), false);
+    document.addEventListener("mouseup", this.onDocumentMouseUp.bind(this), false);
+
+    document.addEventListener("touchstart", this.onDocumentMouseDown.bind(this), false);
+    document.addEventListener("touchmove", this.onDocumentMouseMove.bind(this), false);
+    document.addEventListener("touchend", this.onDocumentMouseUp.bind(this), false);
+  }
 
 }

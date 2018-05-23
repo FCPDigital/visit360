@@ -1,0 +1,51 @@
+/* LOADER 3 */
+
+
+
+.#{$prefix}loader
+  position: fixed
+  top: 50%
+  left: 50%
+  transform: translateX(-50%) translateY(-50%)
+  z-index: 999
+  pointer-events: none
+  opacity: 0
+  transition: .4s
+
+.#{$prefix}photo--loading .#{$prefix}loader
+  opacity: 1
+
+#loader-square
+  width: 100px
+  height: 100px
+  border-radius: 100%
+  position: relative
+  margin: 0 auto
+
+  &::before, &::after
+    content: ""
+    width: 20px
+    height: 20px
+    position: absolute
+    top: 0
+    left: calc(50% - 10px)
+    background-color: #ffed00
+    animation: squaremove 1.5s ease-in-out infinite
+
+  &::after
+    bottom: 0
+    animation-delay: .75s
+
+
+@keyframes squaremove
+  0%, 100%
+    transform: translate(0,0) rotate(0)
+  
+  25%
+    transform: translate(40px,40px) rotate(45deg)
+  
+  50%
+    transform: translate(0px,80px) rotate(0deg)
+  
+  75%
+    transform: translate(-40px,40px) rotate(45deg)

@@ -1,3 +1,4 @@
 window.v360 = {
-    namespace: "v360-"
-}
+  namespace: "v360-"
+};
+  

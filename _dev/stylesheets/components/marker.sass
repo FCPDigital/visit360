@@ -60,7 +60,6 @@
 			&::after
 				display: none
 
-
 	&--overall
 		z-index: 2
 		position: fixed
@@ -70,8 +69,8 @@
 		position: absolute
 		bottom: 30px
 		left: -14px
-		width: 90px
-		font-size: 15px
+		width: 120px
+		font-size: 14px
 		font-weight: bold
 		transform: translateY(-20px)
 		opacity: 0
@@ -125,28 +124,35 @@
 			background-position: center
 
 
-.#{$prefix}photo__thumbnail-back .#{$prefix}marker
-	&__point
+.#{$prefix}photo__thumbnail-back 
+	.#{$prefix}marker
+		&__point
+			width: 5px
+			height: 5px
+			&::after
+				width: 10px
+				height: 10px
+				opacity: 0
+		
+		&__title
+			transform: translateY(0)
+			pointer-events: none
+			opacity: 0
+
+		&:hover
+			.#{$prefix}marker__title
+				opacity: 1
+
+		&__bubble
+			display: none
+
+	&:hover .#{$prefix}marker__point
 		width: 10px
 		height: 10px
 		&::after
 			width: 20px
 			height: 20px
-	
-	&__title
-		transform: translateY(0)
-		pointer-events: none
-		opacity: 0
-
-	&:hover
-		.#{$prefix}marker__title
 			opacity: 1
-
-
-
-
-	&__bubble
-		display: none
 	
 
 

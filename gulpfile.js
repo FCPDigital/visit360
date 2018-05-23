@@ -39,9 +39,9 @@ var scripts = [
 
 
 gulp.task('scripts', function() {
-    return gulp.src(scripts)
-        .pipe(concat('visit360.js'))
-        .pipe(gulp.dest("assets/"));
+  return gulp.src(scripts)
+    .pipe(concat('visit360.js'))
+    .pipe(gulp.dest("assets/"));
 });
 
 
