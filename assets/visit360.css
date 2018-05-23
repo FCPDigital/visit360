@@ -322,7 +322,7 @@
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    transform: translateY(-100%);
+    transform: translateY(-130%);
     transition: .5s;
     z-index: 5;
     background-color: black;
@@ -342,6 +342,7 @@
       position: absolute;
       top: 100%;
       color: #ffed00;
+      background-color: black;
       font-weight: bold;
       width: 100%;
       text-align: center;
